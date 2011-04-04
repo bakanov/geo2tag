@@ -70,6 +70,36 @@ CREATE TABLE channelTimeSlot (
                                                        on delete cascade
 );
 
+CREATE SEQUENCE channel_action_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
+
+CREATE TABLE channel_action (
+id NUMERIC(9,0) NOT NULL,
+user_id NUMERIC(9,0) NOT NULL,
+channel_id NUMERIC(9,0) NOT NULL,
+action CHANNEL_OPERATIONS NOT NULL,
+CONSTRAINT channel_action_id_pk PRIMARY KEY (id), 
+CONSTRAINT user_id_channel_action_fk foreign key (user_id) references users(id) on delete cascade,
+CONSTRAINT channel_id_fk foreign key (channel_id) references channel(id) on delete cascade,
+unique (id, user_id, channel_id, action)
+);
+
+CREATE type mark_operations as enum ('read', 'write');
+
+CREATE type channel_operations as enum ('subscribe', 'unsubscribe');
+
+CREATE SEQUENCE mark_action_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
+
+CREATE TABLE mark_action (
+id NUMERIC(9,0) NOT NULL,
+user_id NUMERIC(9,0) NOT NULL,
+mark_id NUMERIC(9,0) NOT NULL,
+action MARK_OPERATIONS NOT NULL,
+CONSTRAINT id_pk PRIMARY KEY(id),
+CONSTRAINT user_id_fk foreign key (user_id) references users(id) on delete cascade,
+CONSTRAINT mark_id_fk foreign key (mark_id) references tag(id) on delete cascade,
+unique (id, user_id, mark_id, action)
+);
+
 
 
 INSERT into channel (name, description, url) values ('Tourist information', 'This is free read-only tourist information channel. You can get information about buildings, sights around your location', '');
@@ -111,3 +141,14 @@ INSERT into channelTimeSlot (channel_id, timeSlot_id) values (2, 2);
 INSERT into channelTimeSlot (channel_id, timeSlot_id) values (3, 3);
 INSERT into channelTimeSlot (channel_id, timeSlot_id) values (4, 3);
 INSERT into channelTimeSlot (channel_id, timeSlot_id) values (5, 2);
+
+INSERT into channel_action (id, user_id, channel_id, action) values (1, 5, 3, 'subscribe');
+INSERT into channel_action (id, user_id, channel_id, action) values (2, 5, 3, 'unsubscribe');
+INSERT into channel_action (id, user_id, channel_id, action) values (3, 4, 2, 'subscribe');
+
+INSERT into mark_action (id, user_id, mark_id, action) values (1, 1, 2, 'read');
+INSERT into mark_action (id, user_id, mark_id, action) values (2, 1, 2, 'write');
+
+
+
+
