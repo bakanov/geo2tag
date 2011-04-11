@@ -38,7 +38,8 @@ HEADERS += \
 	   inc/UpdateThread.h \
            inc/QueryExecutor.h \
     	   inc/TimeSlotInternal.h \
-    src/access.h
+    src/access.h \
+		inc/SecurityController.h
 
 
 SOURCES += src/main.cpp \
@@ -51,7 +52,8 @@ SOURCES += src/main.cpp \
            src/UpdateThread.cpp \
            src/QueryExecutor.cpp \
            src/TimeSlotInternal.cpp \
-    src/access.cpp
+    src/access.cpp\
+		src/SecurityController.cpp
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
 OBJECTS_DIR = .obj
