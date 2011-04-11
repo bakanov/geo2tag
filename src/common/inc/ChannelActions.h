@@ -1,0 +1,4 @@
+#ifndef CHANNELACTIONS_H
+#define CHANNELACTIONS_H
+
+#endif // CHANNELACTIONS_H
