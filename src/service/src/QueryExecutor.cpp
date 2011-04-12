@@ -4,6 +4,8 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QVariant>
+#include <QMap>
+#include <QPair>
 #include "QueryExecutor.h"
 
 #include "DataMarkInternal.h"
@@ -193,3 +195,12 @@ bool QueryExecutor::subscribeChannel(const QSharedPointer<User>& user,const QSha
     }
     return result;
 }
+//QSharedPointer<ChannelActions> getChannelActions(const QSharedPointer<ChannelActions> &)
+//{
+   //QSqlQuery selectAllActions(m_database);
+   // selectAllActions.executedQuery("SELECT * FROM channel_action");
+   // QMap<QPair<qlonglong, qlonglong>, int> m_data = new QMap<QPair<qlonglong, qlonglong>, int>();
+   // if(selectAllActions.next())
+   //     m_data = selectAllActions.ValuesAsColumns;
+   // return m_data;
+//}

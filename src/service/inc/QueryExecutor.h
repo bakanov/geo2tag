@@ -7,6 +7,7 @@
 #include "User.h"
 #include "Channel.h"
 #include "DataMarks.h"
+#include "ChannelActions.h"
 
 class QueryExecutor : public QObject
 {
@@ -31,6 +32,7 @@ public:
     QSharedPointer<DataMark> insertNewTag(const QSharedPointer<DataMark>&);
     QSharedPointer<User> insertNewUser(const QSharedPointer<User>&);
     QSharedPointer<Channel> insertNewChannel(const QSharedPointer<Channel>&);
+    //QSharedPointer<ChannelActions> getChannelActions(const QSharedPointer<ChannelActions> &);
 
 signals:
 

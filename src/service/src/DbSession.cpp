@@ -74,7 +74,7 @@ namespace common
             m_usersContainer(new Users()),
             m_timeSlotsContainer(new TimeSlots()), //!!!my_change
             m_dataChannelsMap(new DataChannels()),
-            m_channelActionsContainer(new ChannelActions()),
+            //m_channelActionsContainer(new ChannelActions()),
             m_updateThread(NULL),
             m_queryExecutor(NULL)
     {
@@ -86,7 +86,7 @@ namespace common
         m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
         m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);
         m_processors.insert("getTimeSlot", &DbObjectsCollection::processGetTimeSlotQuery); //!!!my_change
-        m_processors.insert("getChannelActions", &DbObjectsCollection::processGetChannelActionsQuery);
+        //m_processors.insert("getChannelActions", &DbObjectsCollection::processGetChannelActionsQuery);
 
         QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
         database.setHostName("localhost");
@@ -100,7 +100,7 @@ namespace common
                         m_usersContainer,
                         m_channelsContainer,
                         m_timeSlotsContainer, //!!!my_change
-                        m_channelActionsContainer,
+                        //m_channelActionsContainer,
                         m_dataChannelsMap,
                         NULL);
 
@@ -539,10 +539,10 @@ namespace common
             syslog(LOG_INFO, "answer: %s", answer.data());
             return answer;
         }
-        QByteArray DbObjectsCollection::processGetChannelActionsQuery(const QByteArray &data)
-        {
+        //QByteArray DbObjectsCollection::processGetChannelActionsQuery(const QByteArray &data)
+        //{
 
-        }
+        //}
 } // namespace common
 
 /* ===[ End of file ]=== */

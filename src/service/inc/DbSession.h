@@ -91,7 +91,7 @@ namespace common
         QByteArray processAddUserQuery(const QByteArray&);
         QByteArray processAddChannelQuery(const QByteArray&);
         QByteArray processGetTimeSlotQuery(const QByteArray&); //!!!my_change
-        QByteArray processGetChannelActionsQuery(const QByteArray&);
+        //QByteArray processGetChannelActionsQuery(const QByteArray&);
 
     public:
 

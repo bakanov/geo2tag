@@ -1,8 +1,0 @@
-#ifndef GETCHANNELACTIONSRESPONSEJSON_H
-#define GETCHANNELACTIONSRESPONSEJSON_H
-
-#include "DefaultResponseJSON.h"
-
-typedef DefaultResponseJSON GetChannelActionsResponseJSON;
-
-#endif // GETCHANNELACTIONSRESPONSEJSON_H

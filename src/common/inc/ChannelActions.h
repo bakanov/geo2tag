@@ -9,23 +9,21 @@ class ChannelActions: public QObject
     Q_OBJECT
     qlonglong m_user;
     qlonglong m_channel;
-    int m_access;// ? bool 1-subscribe, 0-unsubscribe
+    int m_access;
 
 
 protected:
-    ChannelActions(const qlonglong, const qlonglong, const int);
+    ChannelActions(const qlonglong user, const qlonglong channel, const int access);
 
 public:
 
-    //virtual qlonglong getId() const = 0;
+    qlonglong getUser()const;
+    qlonglong getChannel()const;
+    int getAccess()const;
 
-    const qlonglong getUserID()const;
-    const qlonglong getChannelID()const;
-    const int getAccess()const;
-
-    void setUserID(qlonglong user);
-    void setChannelID(qlonglong channel);
-    void setAccess(int access);
+    void setUser(const qlonglong user);
+    void setChannel(const qlonglong channel);
+    void setAccess(const int access);
 
 
     virtual ~ChannelActions();
@@ -34,7 +32,7 @@ public:
 
 
 };
-typedef ConcurrentVector<ChannelActions>ChannelActions;
+//typedef ConcurrentVector<ChannelActions>ChannelActions;
 
 
 

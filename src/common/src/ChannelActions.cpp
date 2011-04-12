@@ -10,27 +10,27 @@ ChannelActions::ChannelActions(const qlonglong user, const qlonglong channel, co
 
 
 
-const qlonglong ChannelActions::getUserID()const
+qlonglong ChannelActions::getUser()const
 {
     return m_user;
 }
 
-const qlonglong ChannelActions::getChannelID()const
+qlonglong ChannelActions::getChannel()const
 {
     return m_channel;
 }
 
-const int ChannelActions::getAccess()const
+int ChannelActions::getAccess()const
 {
     return m_access;
 }
 
-void ChannelActions::setUserID(qlonglong user)
+void ChannelActions::setUser(qlonglong user)
 {
     m_user = user;
 }
 
-void ChannelActions::setChannelID(qlonglong channel)
+void ChannelActions::setChannel(qlonglong channel)
 {
     m_channel = channel;
 }

@@ -44,17 +44,21 @@
 #ifndef _Controller_H_9E63E830_D5D9_4902_B6C5_122E97EB93DB_INCLUDED_
 #define _Controller_H_9E63E830_D5D9_4902_B6C5_122E97EB93DB_INCLUDED_
 
+#include <QMap>
+#include <QPair>
+
 namespace Security
 {
 
+    class Controller{
   	typedef unsigned int Token;
-		typedef unsigned int AccessRights;
+        typedef unsigned int AccessRights;
 
-		QMap< QPair<Token, Token>, AccessRights>   m_data;
+        QMap< QPair<Token, Token>, AccessRights>   m_data;
 
   public:
 
-		static Controller& getInstance();
+        static Controller& getInstance();
 
 
     ~Controller();
