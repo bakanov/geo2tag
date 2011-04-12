@@ -70,34 +70,33 @@ CREATE TABLE channelTimeSlot (
                                                        on delete cascade
 );
 
-/*CREATE SEQUENCE channel_action_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;*/
 
 CREATE TABLE channel_action (
-/*id NUMERIC(9,0) NOT NULL,*/
 user_id NUMERIC(9,0) NOT NULL,
 channel_id NUMERIC(9,0) NOT NULL,
-/*action CHANNEL_OPERATIONS NOT NULL,*/action serial NOT NULL,
-/*CONSTRAINT channel_action_id_pk PRIMARY KEY (id),*/ 
+action SERIAL,
 CONSTRAINT user_id_channel_action_fk foreign key (user_id) references users(id) on delete cascade,
 CONSTRAINT channel_id_fk foreign key (channel_id) references channel(id) on delete cascade,
 unique (user_id, channel_id, action)
 );
 
-CREATE type mark_operations as enum ('read', 'write');
 
-/*CREATE type channel_operations as enum ('subscribe', 'unsubscribe');*/
-
-CREATE SEQUENCE mark_action_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
+CREATE TABLE access_rights (
+id NUMERIC NOT NULL,
+name VARCHAR(300) NOT NULL,
+val NUMERIC NOT NULL,
+CONSTRAINT id_pk PRIMARY KEY(id),
+unique (id, name, val)
+);
+ 
 
 CREATE TABLE mark_action (
-id NUMERIC(9,0) NOT NULL,
 user_id NUMERIC(9,0) NOT NULL,
 mark_id NUMERIC(9,0) NOT NULL,
-action MARK_OPERATIONS NOT NULL,
-CONSTRAINT id_pk PRIMARY KEY(id),
+action SERIAL,
 CONSTRAINT user_id_fk foreign key (user_id) references users(id) on delete cascade,
 CONSTRAINT mark_id_fk foreign key (mark_id) references tag(id) on delete cascade,
-unique (id, user_id, mark_id, action)
+unique (user_id, mark_id, action)
 );
 
 
@@ -146,8 +145,15 @@ INSERT into channel_action (user_id, channel_id, action) values (5, 3, 1);
 INSERT into channel_action (user_id, channel_id, action) values (2, 5, 3);
 INSERT into channel_action (user_id, channel_id, action) values (3, 4, 2);
 
-INSERT into mark_action (id, user_id, mark_id, action) values (1, 1, 2, 'read');
-INSERT into mark_action (id, user_id, mark_id, action) values (2, 1, 2, 'write');
+INSERT into access_rights (id, name, val) values (1, 'create', 1);
+INSERT into access_rights (id, name, val) values (2, 'read', 2);
+INSERT into access_rights (id, name, val) values (3, 'write', 3);
+INSERT into access_rights (id, name, val) values (4, 'subscribe', 4);
+INSERT into access_rights (id, name, val) values (5, 'unsubscribe', 5);
+INSERT into access_rights (id, name, val) values (6, 'remove', 6);
+
+INSERT into mark_action (user_id, mark_id, action) values (1, 1, 2);
+INSERT into mark_action (user_id, mark_id, action) values (2, 1, 3);
 
 
 
