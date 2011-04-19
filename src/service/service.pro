@@ -58,3 +58,4 @@ OBJECTS_DIR = .obj
 
 QT -= gui
 QT += sql
+QMAKE_LFLAGS += -L../lib
