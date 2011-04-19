@@ -93,6 +93,7 @@ namespace common
         database.setDatabaseName("geo2tag");
         database.setUserName("geo2tag");
         database.setPassword("geo2tag");
+	
 
         m_updateThread = new UpdateThread(
                         QSqlDatabase::cloneDatabase(database,"updateThread"),
