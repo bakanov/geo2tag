@@ -4,7 +4,7 @@ include(../../config.pri)
 TARGET = ../lib/wikigpsHttp
 DEPENDPATH += . inc src
 
-target.path = /usr/lib
+target.path = /opt/wikigps-libs
 INSTALLS += target
 
 INCLUDEPATH += . inc \

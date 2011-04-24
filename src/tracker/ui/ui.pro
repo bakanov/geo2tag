@@ -2,7 +2,7 @@ TEMPLATE = app
 
 TARGET = wikigpsTracker-ui
 
-target.path = /usr/bin
+target.path = /opt/wikigps-tracker
 INSTALLS += target
 
 include(../../../config.pri)

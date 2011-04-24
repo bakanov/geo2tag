@@ -1,5 +1,5 @@
 Source: wikigps
-Section: user/other
+Section: user/hidden
 Priority: optional
 Maintainer: Open Source and Linux lab <osll@lists.osll.spb.ru>
 Build-Depends: debhelper (>= 5), dpkg-dev (>= 1.14.6), libqt4-dev (>=4.6)

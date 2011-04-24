@@ -2,7 +2,7 @@ TEMPLATE = lib
 
 TARGET = ../lib/maps
 
-target.path = /usr/lib
+target.path = /opt/wikigps-libs
 INSTALLS += target
 include(../../config.pri)
 
