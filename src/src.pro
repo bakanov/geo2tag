@@ -17,8 +17,8 @@ linux: {
              http_requests \
              service \
              maps \ 
-             webside \
-	     tracker 
+             #webside \
+             #tracker
 }
 
 symbian: {

@@ -70,7 +70,7 @@ namespace common
         QSharedPointer<Users>          m_usersContainer;
         QSharedPointer<TimeSlots>      m_timeSlotsContainer;//!!!my_change
         QSharedPointer<DataChannels>   m_dataChannelsMap;
-        QSharedPointer<ChannelActions> m_channelActionsContainer;
+        //QSharedPointer<ChannelActions> m_channelActionsContainer;
 
         UpdateThread *              m_updateThread;
 

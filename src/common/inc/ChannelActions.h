@@ -17,6 +17,7 @@ protected:
 
 public:
 
+    ChannelActions();
     qlonglong getUser()const;
     qlonglong getChannel()const;
     int getAccess()const;

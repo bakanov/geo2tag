@@ -8,6 +8,7 @@ UpdateThread::UpdateThread(const QSqlDatabase &db,
                            const QSharedPointer<Channels> &channels,
                            const QSharedPointer<TimeSlots> &timeSlots,//!!!my_change
                            const QSharedPointer<DataChannels>& dataChannelsMap,
+                           //const QSharedPointer<ChannelActions>& channelActions,
                            QObject *parent):
     QThread(parent),
     m_channelsContainer(channels),
@@ -15,6 +16,7 @@ UpdateThread::UpdateThread(const QSqlDatabase &db,
     m_usersContainer(users),
     m_timeSlotsContainer(timeSlots),//!!!my_change
     m_dataChannelsMap(dataChannelsMap),
+    //m_channelActionsContainer(channelActions),
     m_database(db)
 {
 }
@@ -42,23 +44,26 @@ void UpdateThread::run()
             continue;
         }
         qDebug() << "connected...";
-        Users       usersContainer(*m_usersContainer);
-        DataMarks   tagsContainer(*m_tagsContainer);
-        Channels    channelsContainer(*m_channelsContainer);
-        TimeSlots   timeSlotsContainer(*m_timeSlotsContainer);//!!!my_change
+        Users           usersContainer(*m_usersContainer);
+        DataMarks       tagsContainer(*m_tagsContainer);
+        Channels        channelsContainer(*m_channelsContainer);
+        TimeSlots       timeSlotsContainer(*m_timeSlotsContainer);//!!!my_change
+        //ChannelActions  channelActionsContainer(*m_channelActionsContainer);
 
         loadUsers(usersContainer);
         loadTags(tagsContainer);
         loadChannels(channelsContainer);
         loadTimeSlots(timeSlotsContainer);//!!!my_change
+        //loadChannelActions(channelActionsContainer);
 
         lockWriting();
         m_usersContainer->merge(usersContainer);
         m_tagsContainer->merge(tagsContainer);
         m_channelsContainer->merge(channelsContainer);
         m_timeSlotsContainer->merge(timeSlotsContainer);//!!!my_change
+        //m_channelActionsContainer->merge(channelActionsContainer);
 
-        updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);//!!!my_change
+        updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);//, *m_channelActionsContainer);//!!!my_change
 
         for(int i=0; i<m_tagsContainer->size(); i++)
         {
@@ -227,3 +232,16 @@ void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &ch
     }
 
 }
+//void UpdateThread::loadChannelActions(ChannelActions & container)
+//{
+//    QSqlQuery query(m_database);
+//    query.exec("select * from channel_action;");
+//    while (query.next())
+//    {
+//        qlonglong user_id = query.record().value("user_id").toLongLong();
+//        qlonglong channel_id = query.record().value("channel_id").toLongLong();
+//        int actions = query.record().value("action").toInt();
+//    }
+
+
+//}
