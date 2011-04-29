@@ -16,9 +16,8 @@ linux: {
              json \
              http_requests \
              service \
-             maps \ 
-             #webside \
-             #tracker
+             maps \
+	     #tracker
 }
 
 symbian: {

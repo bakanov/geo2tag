@@ -52,10 +52,11 @@
 #include "Channel.h"
 #include "DataChannel.h"
 #include "User.h"
-#include "TimeSlot.h" //!!!my_change
+#include "TimeSlot.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 #include "ChannelActions.h"
+
 
 namespace common
 {
@@ -68,9 +69,11 @@ namespace common
         QSharedPointer<Channels>       m_channelsContainer;
         QSharedPointer<DataMarks>      m_tagsContainer;
         QSharedPointer<Users>          m_usersContainer;
-        QSharedPointer<TimeSlots>      m_timeSlotsContainer;//!!!my_change
+        QSharedPointer<TimeSlots>      m_timeSlotsContainer;
         QSharedPointer<DataChannels>   m_dataChannelsMap;
         //QSharedPointer<ChannelActions> m_channelActionsContainer;
+
+
 
         UpdateThread *              m_updateThread;
 
@@ -80,20 +83,35 @@ namespace common
 
         QueryExecutor *             m_queryExecutor;
 
+        static QSharedPointer<TimeSlot> defaultTimeSlot;
+
+        static const qulonglong A_YEAR_IN_ms;
+
+        static const QString error;
+        static const QString ok;
+
         DbObjectsCollection();
 
         QSharedPointer<User> findUserFromToken(const QSharedPointer<User>&) const;
 
         QByteArray processLoginQuery(const QByteArray&);
+        QByteArray processSubscribedChannelsQuery(const QByteArray&);
         QByteArray processAddNewMarkQuery(const QByteArray&);
         QByteArray processRssFeedQuery(const QByteArray&);
         QByteArray processSubscribeQuery(const QByteArray&);
         QByteArray processAddUserQuery(const QByteArray&);
         QByteArray processAddChannelQuery(const QByteArray&);
-        QByteArray processGetTimeSlotQuery(const QByteArray&); //!!!my_change
+
+        QByteArray processGetTimeSlotQuery(const QByteArray&);
         //QByteArray processGetChannelActionsQuery(const QByteArray&);
 
-    public:
+
+        QByteArray processSetTimeSlotQuery(const QByteArray&);
+
+        QByteArray setDefaultTimeSlotValueForChannels();
+
+
+    public:        
 
         static DbObjectsCollection& getInstance();
 
