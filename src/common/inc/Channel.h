@@ -56,16 +56,16 @@ class Channel: public QObject
   double m_activeRadius;                //!< Displayed on the UI
   bool m_isDisplayed;
   QSharedPointer<TimeSlot> m_timeSlot;
-  bool m_timeSlotIsDefault;
+  bool m_timeSlotIsDefault; 
 
-  protected:
+  public:    
+
+    static const qulonglong DEFAULT_TIME_SLOT_VALUE_MIN;
+
+
     Channel(const QString &name, const QString &description, const QString& url="");
 
-  public:
-
-    static const qulonglong DEFAULT_TIME_SLOT_VALUE_MS;
-
-    virtual qlonglong getId() const = 0;
+    virtual qlonglong getId() const;
 
     const QString& getDescription() const;
 
