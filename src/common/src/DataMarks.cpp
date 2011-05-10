@@ -73,10 +73,11 @@ m_time(time)
   m_timeSlot = QSharedPointer<TimeSlot>(NULL);
 }
 
+
 qlonglong DataMark::getId() const
 {
-    // Database doesn't contain 0 in sequences, see scripts/base.sql
-    return 0;
+  // Database doesn't contain 0 in sequences, see scripts/base.sql
+  return 0;
 }
 
 

@@ -51,7 +51,7 @@ const QString &name,
 const QString &description,
 const QString &url):
 Channel(name, description, url), m_id(id)
-{ 
+{
 }
 
 
@@ -59,6 +59,7 @@ qlonglong DbChannel::getId() const
 {
   return m_id;
 }
+
 
 void DbChannel::setId(qlonglong id)
 {

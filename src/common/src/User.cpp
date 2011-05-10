@@ -49,12 +49,12 @@ m_channels(new Channels())
 {
 }
 
+
 qlonglong User::getId() const
 {
   // Database is not contain 0 in sequences, see scripts/base.sql
   return 0;
 }
-
 
 
 void User::subscribe(const QSharedPointer<Channel>& channel)

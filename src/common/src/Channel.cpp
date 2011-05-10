@@ -56,10 +56,11 @@ m_timeSlotIsDefault(true)
   m_timeSlot = QSharedPointer<TimeSlot>(new TimeSlot(DEFAULT_TIME_SLOT_VALUE_MIN));
 }
 
+
 qlonglong Channel::getId() const
 {
-    // Database doesn't contain 0 in sequences, see scripts/base.sql
-    return 0;
+  // Database doesn't contain 0 in sequences, see scripts/base.sql
+  return 0;
 }
 
 
@@ -124,7 +125,7 @@ void Channel::setTimeSlot(QSharedPointer<TimeSlot> timeSlot)
 
 
 QSharedPointer<TimeSlot> Channel::getTimeSlot() const
-{  
+{
   return m_timeSlot;
 }
 
@@ -139,7 +140,6 @@ void Channel::setDefaultTimeSlot(bool fl)
 {
   m_timeSlotIsDefault = fl;
 }
-
 
 
 Channel::~Channel()
