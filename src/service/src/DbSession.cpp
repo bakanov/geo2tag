@@ -91,7 +91,7 @@ namespace common
 
             m_timeSlotsContainer(new TimeSlots()),
             m_dataChannelsMap(new DataChannels()),
-            //m_channelActionsContainer(new ChannelActions()),
+            m_channelActionsContainer(new ChannelActions()),
 
 
             m_updateThread(NULL),
@@ -106,7 +106,7 @@ namespace common
         m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
         m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);
 
-        //m_processors.insert("getChannelActions", &DbObjectsCollection::processGetChannelActionsQuery);
+        m_processors.insert("getChannelActions", &DbObjectsCollection::processGetChannelActionsQuery);
 
         m_processors.insert("getTimeSlot", &DbObjectsCollection::processGetTimeSlotQuery);
         m_processors.insert("setTimeSlot", &DbObjectsCollection::processSetTimeSlotQuery);
@@ -126,7 +126,7 @@ namespace common
                         m_channelsContainer,
 
                         m_timeSlotsContainer,
-                        //m_channelActionsContainer,
+                        m_channelActionsContainer,
 
                         m_dataChannelsMap,
                         NULL);

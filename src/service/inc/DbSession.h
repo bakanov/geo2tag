@@ -71,7 +71,7 @@ namespace common
         QSharedPointer<Users>          m_usersContainer;
         QSharedPointer<TimeSlots>      m_timeSlotsContainer;
         QSharedPointer<DataChannels>   m_dataChannelsMap;
-        //QSharedPointer<ChannelActions> m_channelActionsContainer;
+        QSharedPointer<ChannelActions> m_channelActionsContainer;
 
 
 
@@ -103,7 +103,7 @@ namespace common
         QByteArray processAddChannelQuery(const QByteArray&);
 
         QByteArray processGetTimeSlotQuery(const QByteArray&);
-        //QByteArray processGetChannelActionsQuery(const QByteArray&);
+        QByteArray processGetChannelActionsQuery(const QByteArray&);
 
 
         QByteArray processSetTimeSlotQuery(const QByteArray&);

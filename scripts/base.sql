@@ -80,12 +80,11 @@ unique (user_id, channel_id, action)
 );
 
 
-CREATE TABLE access_rights (
-id NUMERIC NOT NULL,
+CREATE TABLE actions (
+id SERIAL NOT NULL,
 name VARCHAR(300) NOT NULL,
-val NUMERIC NOT NULL,
 CONSTRAINT id_pk PRIMARY KEY(id),
-unique (id, name, val)
+unique (id, name)
 );
  
 
@@ -144,12 +143,12 @@ INSERT into channel_action (user_id, channel_id, action) values (5, 3, 1);
 INSERT into channel_action (user_id, channel_id, action) values (2, 5, 3);
 INSERT into channel_action (user_id, channel_id, action) values (3, 4, 2);
 
-INSERT into access_rights (id, name, val) values (1, 'create', 1);
-INSERT into access_rights (id, name, val) values (2, 'read', 2);
-INSERT into access_rights (id, name, val) values (3, 'write', 3);
-INSERT into access_rights (id, name, val) values (4, 'subscribe', 4);
-INSERT into access_rights (id, name, val) values (5, 'unsubscribe', 5);
-INSERT into access_rights (id, name, val) values (6, 'remove', 6);
+INSERT into actions (id, name) values (1, 'create');
+INSERT into actions (id, name) values (2, 'read');
+INSERT into actions (id, name) values (3, 'write');
+INSERT into actions (id, name) values (4, 'subscribe');
+INSERT into actions (id, name) values (5, 'unsubscribe');
+INSERT into actions (id, name) values (6, 'remove');
 
 INSERT into mark_action (user_id, mark_id, action) values (1, 1, 2);
 INSERT into mark_action (user_id, mark_id, action) values (2, 1, 3);
