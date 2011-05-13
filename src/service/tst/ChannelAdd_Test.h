@@ -48,12 +48,11 @@
 
 namespace
 {
-    const QString requestLogin = "{\"login\":\"Kirill\",\"password\":\"test\"}";
-    const QString request = "{\"auth_token\":\"KKKKKKKKKK\", \"name\":\"Test channel9\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
+  const QString requestLogin = "{\"login\":\"Kirill\",\"password\":\"test\"}";
+  const QString request = "{\"auth_token\":\"KKKKKKKKKK\", \"name\":\"Test channel9\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
                          \"activeRadius\":3000}";
-    const QString reply = "{ \"status\" : \"Ok\", \"status_description\" : \"Channel added\" }";
+  const QString reply = "{ \"status\" : \"Ok\", \"status_description\" : \"Channel added\" }";
 }
-
 
 
 namespace Test
@@ -71,26 +70,25 @@ namespace Test
 
       ChannelAdd_Test(QObject *parent = NULL) : QObject(parent)
       {
-          dboc = &common::DbObjectsCollection::getInstance();
-          requestLoginByte.append(requestLogin);
-          requestByte.append(request);
-          replyByte.append(reply);
+        dboc = &common::DbObjectsCollection::getInstance();
+        requestLoginByte.append(requestLogin);
+        requestByte.append(request);
+        replyByte.append(reply);
       }
 
       ~ChannelAdd_Test()
       {
-          dboc->stopUpdate();
+        dboc->stopUpdate();
       }
 
     private slots:
 
       void addChannel()
       {
-          dboc->process("login", requestLoginByte);
-          QCOMPARE( QString(dboc->process("addChannel", requestByte).data()), QString(replyByte.data()));
+        dboc->process("login", requestLoginByte);
+        QCOMPARE( QString(dboc->process("addChannel", requestByte).data()), QString(replyByte.data()));
       }
 
-  }; // class AddChannel_Test
+  };                                    // class AddChannel_Test
 
-} // end of namespace Test
-
+}                                       // end of namespace Test

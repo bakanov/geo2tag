@@ -140,9 +140,6 @@ namespace common
   DbObjectsCollection& DbObjectsCollection::getInstance()
   {
     static DbObjectsCollection s;
-    syslog(LOG_INFO,"test!!!!!! %i ", s.m_usersContainer->vector().size());
-    syslog(LOG_INFO,"test!!!!!!! %i ", s.m_tagsContainer->vector().size());
-    syslog(LOG_INFO,"test!!!!!! %i ", s.m_channelsContainer->vector().size());
     return s;
   }
 
@@ -195,17 +192,11 @@ namespace common
     LoginResponseJSON response;
     QByteArray answer;
 
-    syslog(LOG_INFO, "test1");
     request.parseJson(data);
-    syslog(LOG_INFO, "test2");
 
     QSharedPointer<User> dummyUser = request.getUsers()->at(0);
     QSharedPointer<User> realUser;      // Null pointer
     QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    syslog(LOG_INFO, "test3 %i", currentUsers.size());
-    syslog(LOG_INFO, "test3 %i", m_channelsContainer->vector().size());
-    syslog(LOG_INFO, "test3 %i", m_tagsContainer ->vector().size());
-    syslog(LOG_INFO, "test3 %i", m_timeSlotsContainer ->vector().size());
 
     for(int i=0; i<currentUsers.size(); i++)
     {
@@ -481,12 +472,6 @@ namespace common
 
   QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
   {
-//      const char *dataChar = data.data();
-//       while (*dataChar)
-//      {
-//           syslog(LOG_INFO, "%c", *dataChar);
-//           ++dataChar;
-//       }
     syslog(LOG_INFO, "starting AddChannelQuery processing");
     AddChannelRequestJSON request;
     syslog(LOG_INFO, " AddChannelRequestJSON created, now create AddChannelResponseJSON ");
@@ -532,7 +517,7 @@ namespace common
       response.setStatus(error);
       response.setStatusMessage("Internal server error ):");
       answer.append(response.getJson());
-      syslog(LOG_INFO, "answer: %s", answer.data());     
+      syslog(LOG_INFO, "answer: %s", answer.data());
       return answer;
     }
 
@@ -545,12 +530,6 @@ namespace common
     response.setStatusMessage("Channel added");
     answer.append(response.getJson());
     syslog(LOG_INFO, "answer: %s", answer.data());
-//    const char *dataChar2 = answer.data();
-//     while (*dataChar2)
-//    {
-//         syslog(LOG_INFO, "%c", *dataChar2);
-//         ++dataChar2;
-//     }
     return answer;
   }
 

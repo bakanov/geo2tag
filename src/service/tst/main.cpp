@@ -42,9 +42,9 @@
 
 #include "ChannelAdd_Test.h"
 
-int main()
+int main(int c, char **v)
 {
-  //QApplication app(c,v);
+  QApplication app(c,v);
 
   Test::ChannelAdd_Test test;
   QTest::qExec(&test);
@@ -54,4 +54,3 @@ int main()
 
 
 /* ===[ End of file $HeadURL$ ]=== */
-
