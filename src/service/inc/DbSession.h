@@ -104,6 +104,8 @@ namespace common
 
       QByteArray process(const QString& queryType, const QByteArray& body);
 
+      void stopUpdate();
+
       ~DbObjectsCollection();
 
     private:

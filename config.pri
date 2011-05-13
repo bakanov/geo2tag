@@ -50,3 +50,5 @@ LIBS += -L$$SOURCE_DIR/src/lib
 UI_HEADERS_DIR = inc
 UI_SOURCES_DIR = src
 
+HEADERS += \
+    ../AddChannel_Test.h

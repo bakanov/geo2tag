@@ -21,7 +21,8 @@ linux: {
              maps \ 
 	     tracker \
              service \
-	     common/tst
+             common/tst \
+             service/tst
 }
 
 symbian: {
