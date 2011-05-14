@@ -391,3 +391,5 @@ bool QueryExecutor::deleteMarkTimeSlot(const QSharedPointer<DataMark>& tag)
   }
   return result;
 }
+//insertNewUserAccess
+//changeUserAccess
