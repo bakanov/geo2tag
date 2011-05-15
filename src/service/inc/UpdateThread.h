@@ -33,7 +33,7 @@ class UpdateThread: public QThread
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
   void loadChannelActions(ChannelActions &); //--!!
-  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&);//, ChannelActions&);
+  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&, ChannelActions&);
 
   void run();
 
@@ -45,6 +45,7 @@ class UpdateThread: public QThread
       const QSharedPointer<Channels>& channels,
       const QSharedPointer<TimeSlots>& timeSlots,
       const QSharedPointer<DataChannels>& dataChannelsMap,
+      const QSharedPointer<ChannelActions> &channelActions,
       QObject *parent = 0);
 
     void lockWriting();
