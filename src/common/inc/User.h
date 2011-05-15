@@ -69,6 +69,8 @@ class User: public QObject
 
     void unsubscribe(const QSharedPointer<Channel>& channel);
 
+
+
     const QString& getLogin() const;
     const QString& getPassword() const;
     const QString& getToken() const;

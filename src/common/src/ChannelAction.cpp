@@ -7,34 +7,34 @@ ChannelActions::ChannelActions(qlonglong user, qlonglong channel, int action):
 {
 }
 
-void ChannelActions::setUser(qlonglong user)
+/*void ChannelActions::setUser(qlonglong user)
 {
     m_user(user);
-}
+}*/
 
 qlonglong ChannelActions::getUser()const
 {
     return m_user;
 }
 
-void ChannelActions::setChannel(qlonglong channel)
+/*void ChannelActions::setChannel(qlonglong channel)
 {
     m_channel(channel);
-}
+}*/
 
 qlonglong ChannelActions::getChannel()const
 {
     return m_channel;
 }
 
-void ChannelActions::setAction(int action)
+/*void ChannelActions::setAction(int action)
 {
     m_action(action);
-}
+}*/
 
 int ChannelActions::getAction()const
 {
-    return action;
+    return m_action;
 }
 
 ChannelActions::~ChannelActions()
