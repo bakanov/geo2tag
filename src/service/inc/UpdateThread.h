@@ -33,7 +33,7 @@ class UpdateThread: public QThread
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
   void loadChannelActions(ChannelActions &); //--!!
-  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&, ChannelActions&);
+  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&);//, ChannelActions&);
 
   void run();
 
