@@ -289,6 +289,8 @@ void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &ch
         channelact = channelActions.setChannel(channel_id);
         channelact = channelActions.setAction(action);
         //QSharedPointer<ChannelActions> channelact = channelActions.setUser(user_id);
+        //or
+        //QSharedPointer<ChannelAccess>
     }
     }
 
