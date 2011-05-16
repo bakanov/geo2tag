@@ -1,43 +1,49 @@
 #include "ChannelAction.h"
 
-ChannelActions::ChannelActions(qlonglong user, qlonglong channel, int action):
+ChannelAction::ChannelAction(qlonglong user, qlonglong channel, int action):
         m_user(user),
         m_channel(channel),
         m_action(action)
 {
 }
 
-/*void ChannelActions::setUser(qlonglong user)
+qlonglong ChannelAction::getId() const
+{
+  // Database is not contain 0 in sequences, see scripts/base.sql
+  return 0;
+}
+
+/*void ChannelAction::setUser(qlonglong user)
 {
     m_user(user);
 }*/
 
-qlonglong ChannelActions::getUser()const
+qlonglong ChannelAction::getUser()const
 {
     return m_user;
 }
 
-/*void ChannelActions::setChannel(qlonglong channel)
+/*void ChannelAction::setChannel(qlonglong channel)
 {
     m_channel(channel);
 }*/
 
-qlonglong ChannelActions::getChannel()const
+qlonglong ChannelAction::getChannel()const
 {
     return m_channel;
 }
 
-/*void ChannelActions::setAction(int action)
+/*void ChannelAction::setAction(int action)
 {
     m_action(action);
 }*/
 
-int ChannelActions::getAction()const
+int ChannelAction::getAction()const
 {
     return m_action;
 }
 
-ChannelActions::~ChannelActions()
+ChannelAction::~ChannelAction()
 {
 }
 

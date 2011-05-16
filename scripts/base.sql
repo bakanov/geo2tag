@@ -78,44 +78,55 @@ CREATE TABLE tagTimeSlot (
                                                        on delete cascade
 );
 
-CREATE TABLE actions (
-id SERIAL NOT NULL,
+CREATE SEQUENCE actions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
+
+CREATE TABLE action (
+id NUMERIC(9,0) NOT NULL DEFAULT nextval('actions_seq'),
+mask SERIAL NOT NULL,
 name VARCHAR(300) NOT NULL,
 CONSTRAINT id_pk PRIMARY KEY(id),
-unique (id, name)
+unique (mask, name)
 );
+
+CREATE SEQUENCE channel_actions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 
 CREATE TABLE channel_action (
+id NUMERIC(9,0) NOT NULL DEFAULT nextval('channel_actions_seq'),
 user_id NUMERIC(9,0) NOT NULL,
 channel_id NUMERIC(9,0) NOT NULL,
-action_id SERIAL,
+action SERIAL,
+CONSTRAINT channel_action_pkey primary key (id),
 CONSTRAINT user_id_channel_action_fk foreign key (user_id) references users(id) on delete cascade,
 CONSTRAINT channel_id_fk foreign key (channel_id) references channel(id) on delete cascade,
-unique (user_id, channel_id, action_id)
+unique (user_id, channel_id, action)
 );
 
-CREATE TABLE mark_action (
+CREATE SEQUENCE tag_actions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
+
+CREATE TABLE tag_action (
+id NUMERIC(9,0) NOT NULL DEFAULT nextval('tag_actions_seq'),
 user_id NUMERIC(9,0) NOT NULL,
-mark_id NUMERIC(9,0) NOT NULL,
-action_id SERIAL,
+tag_id NUMERIC(9,0) NOT NULL,
+action SERIAL,
+CONSTRAINT tag_action_pkey primary key (id),
 CONSTRAINT user_id_fk foreign key (user_id) references users(id) on delete cascade,
-CONSTRAINT mark_id_fk foreign key (mark_id) references tag(id) on delete cascade,
-unique (user_id, mark_id, action_id)
+CONSTRAINT tag_id_fk foreign key (tag_id) references tag(id) on delete cascade,
+unique (user_id, tag_id, action)
 );
 
-INSERT into channel_action (user_id, channel_id, action) values (5, 3, 1);
-INSERT into channel_action (user_id, channel_id, action) values (2, 5, 3);
-INSERT into channel_action (user_id, channel_id, action) values (3, 4, 2);
+INSERT into channel_action (user_id, channel_id, action) values (5, 3, 3);
+INSERT into channel_action (user_id, channel_id, action) values (2, 5, 5);
+INSERT into channel_action (user_id, channel_id, action) values (3, 4, 3);
 
-INSERT into actions (id, name) values (1, 'create');
-INSERT into actions (id, name) values (2, 'read');
-INSERT into actions (id, name) values (3, 'write');
-INSERT into actions (id, name) values (4, 'subscribe');
-INSERT into actions (id, name) values (5, 'unsubscribe');
-INSERT into actions (id, name) values (6, 'remove');
+INSERT into action (mask, name) values (1,  'subscribe');
+INSERT into action (mask, name) values (2,  'unsubscribe');
+INSERT into action (mask, name) values (4,  'write');
+INSERT into action (mask, name) values (8,  'read');
+INSERT into action (mask, name) values (16, 'create');
+INSERT into action (mask, name) values (32, 'remove');
 
-INSERT into mark_action (user_id, mark_id, action) values (1, 1, 2);
-INSERT into mark_action (user_id, mark_id, action) values (2, 1, 3);
+INSERT into tag_action (user_id, tag_id, action) values (1, 1, 3);
+INSERT into tag_action (user_id, tag_id, action) values (2, 1, 3);
 
 
 

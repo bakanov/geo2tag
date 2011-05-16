@@ -1,15 +1,13 @@
 #ifndef CHANNELACTION_H
 #define CHANNELACTION_H
 
-#include "QMultiMap"
 #include "QMap"
 #include "QPair"
-#include "QSharedPointer"
 #include "User.h"
 #include "Channel.h"
-#include "Actions.h"
+#include "Action.h"
 
-class ChannelActions: public QObject
+class ChannelAction: public QObject
 {
     Q_OBJECT
 
@@ -18,7 +16,9 @@ class ChannelActions: public QObject
     int m_action;
 
 public:
-    ChannelActions(qlonglong user, qlonglong channel, int action);
+    ChannelAction(qlonglong user, qlonglong channel, int action);
+
+    virtual qlonglong getId() const;
 
     //void setUser(qlonglong user);
     qlonglong getUser()const;
@@ -29,10 +29,12 @@ public:
     //void setAction(int action);
     int getAction()const;
 
-    virtual ~ChannelActions();
+    virtual ~ChannelAction();
 
 
 };
-typedef QMap< QPair<QSharedPointer<User>, QSharedPointer<Channel> >, QSharedPointer<Actions> > ChannelAccess;
-//typedef QMap<QPair<user, channel>>action> ChannelAccess;
+
+
+//typedef QMap<QPair<User, Channel>, Action> ChannelActions;
+
 #endif // CHANNELACTION_H

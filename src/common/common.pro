@@ -27,7 +27,7 @@ HEADERS += \
     inc/DataChannel.h \
     inc/TimeSlot.h \
     inc/ChannelAction.h \
-    inc/Actions.h
+    inc/Action.h
 
 SOURCES += \
     src/DataMarks.cpp \
@@ -38,7 +38,7 @@ SOURCES += \
     src/User.cpp \
     src/TimeSlot.cpp \
     src/ChannelAction.cpp \
-    src/Actions.cpp
+    src/Action.cpp
 
 linux: {
     HEADERS +=  \
