@@ -7,7 +7,9 @@
 #include "Channel.h"
 #include "Action.h"
 
-class ChannelAction: public QObject
+typedef QMap<QPair<User, Channel>, Action> ChannelActions;
+
+/*class ChannelAction: public QObject
 {
     Q_OBJECT
 
@@ -32,9 +34,9 @@ public:
     virtual ~ChannelAction();
 
 
-};
+};*/
 
 
-//typedef QMap<QPair<User, Channel>, Action> ChannelActions;
+
 
 #endif // CHANNELACTION_H

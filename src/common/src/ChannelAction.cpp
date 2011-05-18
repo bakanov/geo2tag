@@ -1,6 +1,6 @@
 #include "ChannelAction.h"
 
-ChannelAction::ChannelAction(qlonglong user, qlonglong channel, int action):
+/*ChannelAction::ChannelAction(qlonglong user, qlonglong channel, int action):
         m_user(user),
         m_channel(channel),
         m_action(action)
@@ -13,37 +13,38 @@ qlonglong ChannelAction::getId() const
   return 0;
 }
 
-/*void ChannelAction::setUser(qlonglong user)
+void ChannelAction::setUser(qlonglong user)
 {
     m_user(user);
-}*/
+}
 
 qlonglong ChannelAction::getUser()const
 {
     return m_user;
 }
 
-/*void ChannelAction::setChannel(qlonglong channel)
+void ChannelAction::setChannel(qlonglong channel)
 {
     m_channel(channel);
-}*/
+}
 
 qlonglong ChannelAction::getChannel()const
 {
     return m_channel;
 }
 
-/*void ChannelAction::setAction(int action)
+void ChannelAction::setAction(int action)
 {
     m_action(action);
-}*/
+}
+*/
 
-int ChannelAction::getAction()const
+/*int ChannelAction::getAction()const
 {
     return m_action;
 }
 
 ChannelAction::~ChannelAction()
 {
-}
+}*/
 

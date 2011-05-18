@@ -52,6 +52,7 @@
 #include "DataChannel.h"
 #include "User.h"
 #include "TimeSlot.h"
+#include "ChannelAction.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 
@@ -68,6 +69,7 @@ namespace common
     QSharedPointer<Users>        m_usersContainer;
     QSharedPointer<TimeSlots>    m_timeSlotsContainer;
     QSharedPointer<DataChannels> m_dataChannelsMap;
+    QSharedPointer<ChannelActions>m_channelActionMap;//!!--
 
     UpdateThread *              m_updateThread;
 

@@ -98,6 +98,7 @@ namespace common
     m_usersContainer(new Users()),
     m_timeSlotsContainer(new TimeSlots()),
     m_dataChannelsMap(new DataChannels()),
+    m_channelActionMap(new ChannelActions()),//!!--
     m_updateThread(NULL),
     m_queryExecutor(NULL)
   {
