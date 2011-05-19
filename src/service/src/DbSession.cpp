@@ -1088,18 +1088,9 @@ namespace common
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
-    }
+    }                                                         
 
-    //      QSharedPointer<Session> session = QSharedPointer<Session>(new Session(
-    //                                                                request.getLatitude(),
-    //                                                                request.getLongitude(),
-    //                                                                request.getRadius(),
-    //                                                                request.getTimeSlot(),
-    //                                                                request.getIsTimeCurrent(),
-    //                                                                request.getTime()));
-
-    m_updateThread->lockWriting();
-    //realUser->setSession(session);
+    m_updateThread->lockWriting();    
     realUser->getSession()->setLatitude(request.getLatitude());
     realUser->getSession()->setLongitude(request.getLongitude());
     realUser->getSession()->setRadius(request.getRadius());
