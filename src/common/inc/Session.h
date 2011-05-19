@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLL osll@osll.spb.ru
+ * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,72 +28,70 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file Channel.h
- * \brief Header of Channel
+
+/*! ---------------------------------------------------------------
+ * \file Session.h
+ * \brief Header of Session
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_
-#define _Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_
+#ifndef _SESSION_H_27cc31d1_34fc_435a_8d41_283814c36daa_INCLUDED_
+#define _SESSION_H_27cc31d1_34fc_435a_8d41_283814c36daa_INCLUDED_
+
+/*!
+ * Class description.
+ *
+ */
 
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
+#include <QDateTime>
 
 #include "ConcurrentVector.h"
-#include "TimeSlot.h"
 
-class Channel: public QObject
+class Session: public QObject
 {
-  Q_OBJECT                              //!< channel name
-    QString m_name;                     //!< Description for channel
-  QString m_description;                //!< URL for mark
-  QString m_url;                        //< Radius for visible marks
-  double m_activeRadius;                //!< Displayed on the UI
-  bool m_isDisplayed;
-  QSharedPointer<TimeSlot> m_timeSlot;
-  bool m_timeSlotIsDefault;
+  Q_OBJECT;
+
+  double m_latitude;                    // latitude of centre of zone for drawing tags
+  double m_longitude;                   // longitude of centre of zone for drawing tags
+  double m_radius;                      // radius of zone for drawing tags (in km)
+  qulonglong m_timeSlot;                // 'radius' of time zone for drawing tags (in minutes)
+  bool m_isCurrentTime;
+  QDateTime m_time;                     // 'centre' of time zone for drawing tags
 
   public:
+    Session();
 
-    static const qulonglong DEFAULT_TIME_SLOT_VALUE_MIN;
+    Session(double latitude, double longitude, double radius, qulonglong timeSlot, bool isCurrentTime, QDateTime time);
 
-    Channel(const QString &name, const QString &description, const QString& url="");
+    double getLatitude() const;
+    void setLatitude(const double&);
 
-    virtual qlonglong getId() const;
+    double getLongitude() const;
+    void setLongitude(const double&);
 
-    const QString& getDescription() const;
-
-    const QString& getName() const;
-
-    const QString& getUrl() const;
-
-    void setDescription(const QString& description);
-
-    void setUrl(const QString& url);
-
-    void setRadius(const double &radius);
     double getRadius() const;
+    void setRadius(const double&);
 
-    bool isDisplayed() const;
-    void setDisplayed(bool);
+    qulonglong getTimeSlot() const;
+    void setTimeSlot(const qulonglong&);
 
-    void setTimeSlot(QSharedPointer<TimeSlot> timeSlot);
-    QSharedPointer<TimeSlot> getTimeSlot() const;
+    QDateTime getTime() const;
+    void setTime(const QDateTime&);
 
-    bool timeSlotIsDefault() const;
-    void setDefaultTimeSlot(bool);
+    bool getIsTimeCurrent() const;
+    void setIsTimeCurrent(bool);
 
-    virtual ~Channel();
-    // class Channel
-};
+  private:
+    Session(const Session&);
+    Session& operator=(const Session&);
 
-typedef ConcurrentVector<Channel> Channels;
-//_Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_
-#endif
+};                                      // class Session
 
-/* ===[ End of file ]=== */
+typedef ConcurrentVector<Session> Sessions;
+#endif                                  // _SESSION_H_27cc31d1_34fc_435a_8d41_283814c36daa_INCLUDED_

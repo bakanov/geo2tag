@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLL osll@osll.spb.ru
+ * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,65 +28,45 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file User.h
- * \brief Header of User
+
+/*! ---------------------------------------------------------------
+ * \file GetSessionPointResponseJSON.h
+ * \brief Header of GetSessionPointResponseJSON
+ *
+ * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#define _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
+#ifndef _GETSESSIONPOINTRESPONSEJSON_H_0251a51f_0874_46a2_974c_0adedfc6c781_INCLUDED_
+#define _GETSESSIONPOINTRESPONSEJSON_H_0251a51f_0874_46a2_974c_0adedfc6c781_INCLUDED_
+
+#include "JsonSerializer.h"
 
 #include <QString>
-#include <QSharedPointer>
-#include "Channel.h"
-#include "Session.h"
+#include <QDateTime>
 
-#include "ConcurrentVector.h"
-
-class User: public QObject
+class GetSessionPointResponseJSON: public JsonSerializer
 {
-  Q_OBJECT
-    QString m_login;
-  QString m_password;
-
-  QString m_result;
-  QString m_token;
-
-  QSharedPointer<Channels> m_channels;  // list of subscribed channels
-  QSharedPointer<Session> m_session;
-
-  protected:
-
-    void setToken(const QString&);
+  double m_latitude;
+  double m_longitude;
+  double m_radius;
+  QDateTime m_time;
+  qulonglong m_timeSlot;
 
   public:
 
-    User(const QString& name, const QString& passw);
+    GetSessionPointResponseJSON(QObject *parent=0);
 
-    virtual qlonglong getId() const;
+    double getLatitude() const;
+    double getLongitude() const;
+    double getRadius() const;
+    qulonglong getTimeSlot() const;
+    const QDateTime& getTime() const;
 
-    void subscribe(const QSharedPointer<Channel>& channel);
+    QByteArray getJson() const;
 
-    void unsubscribe(const QSharedPointer<Channel>& channel);
+    void parseJson(const QByteArray&);
 
-    const QString& getLogin() const;
-    const QString& getPassword() const;
-    const QString& getToken() const;
-    const QSharedPointer<Channels> getSubscribedChannels() const;
-
-    void setPassword(const QString password);
-
-    QSharedPointer<Session> getSession() const;
-    void setSession(QSharedPointer<Session> session);
-
-    virtual ~User();
-    // class User
-};
-
-typedef ConcurrentVector<User> Users;
-//_User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#endif
-
-/* ===[ End of file ]=== */
+};                                      //class GetSessionPointResponseJSON
+#endif                                  // _GETSESSIONPOINTRESPONSEJSON_H_0251a51f_0874_46a2_974c_0adedfc6c781_INCLUDED_

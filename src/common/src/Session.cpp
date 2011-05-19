@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLL osll@osll.spb.ru
+ * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,65 +28,118 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file User.h
- * \brief Header of User
+
+/*! ---------------------------------------------------------------
+ *
+ * \file Session.cpp
+ * \brief Session implementation
+ *
+ * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#define _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-
-#include <QString>
-#include <QSharedPointer>
-#include "Channel.h"
 #include "Session.h"
 
-#include "ConcurrentVector.h"
-
-class User: public QObject
+Session::Session():
+m_latitude(60.0),
+m_longitude(30.0),
+m_radius(20037.85),
+m_timeSlot(525600),
+m_isCurrentTime(1),
+m_time(QDateTime())
 {
-  Q_OBJECT
-    QString m_login;
-  QString m_password;
+}
 
-  QString m_result;
-  QString m_token;
 
-  QSharedPointer<Channels> m_channels;  // list of subscribed channels
-  QSharedPointer<Session> m_session;
+Session::Session(double latitude,
+double longitude,
+double radius,
+qulonglong timeSlot,
+bool isCurrentTime,
+QDateTime time):
+m_latitude(latitude),
+m_longitude(longitude),
+m_radius(radius),
+m_timeSlot(timeSlot),
+m_isCurrentTime(isCurrentTime)
+{
+  if (!isCurrentTime)
+    m_time = time;
+  else
+    m_time = QDateTime();
+}
 
-  protected:
 
-    void setToken(const QString&);
+double Session::getLatitude() const
+{
+  return m_latitude;
+}
 
-  public:
 
-    User(const QString& name, const QString& passw);
+void Session::setLatitude(const double& latitude)
+{
+  m_latitude = latitude;
+}
 
-    virtual qlonglong getId() const;
 
-    void subscribe(const QSharedPointer<Channel>& channel);
+double Session::getLongitude() const
+{
+  return m_longitude;
+}
 
-    void unsubscribe(const QSharedPointer<Channel>& channel);
 
-    const QString& getLogin() const;
-    const QString& getPassword() const;
-    const QString& getToken() const;
-    const QSharedPointer<Channels> getSubscribedChannels() const;
+void Session::setLongitude(const double& longitude)
+{
+  m_longitude = longitude;
+}
 
-    void setPassword(const QString password);
 
-    QSharedPointer<Session> getSession() const;
-    void setSession(QSharedPointer<Session> session);
+double Session::getRadius() const
+{
+  return m_radius;
+}
 
-    virtual ~User();
-    // class User
-};
 
-typedef ConcurrentVector<User> Users;
-//_User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#endif
+void Session::setRadius(const double& radius)
+{
+  m_radius = radius;
+}
 
-/* ===[ End of file ]=== */
+
+qulonglong Session::getTimeSlot() const
+{
+  return m_timeSlot;
+}
+
+
+void Session::setTimeSlot(const qulonglong& timeSlot)
+{
+  m_timeSlot = timeSlot;
+}
+
+
+QDateTime Session::getTime() const
+{
+  if (m_isCurrentTime)
+    return QDateTime::currentDateTime().toUTC();
+  return m_time;
+}
+
+
+void Session::setTime(const QDateTime& time)
+{
+  m_time = time;
+}
+
+
+bool Session::getIsTimeCurrent() const
+{
+  return m_isCurrentTime;
+}
+
+
+void Session::setIsTimeCurrent(bool vl)
+{
+  m_isCurrentTime = vl;
+}

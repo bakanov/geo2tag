@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLL osll@osll.spb.ru
+ * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,65 +28,53 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file User.h
- * \brief Header of User
+
+/*! ---------------------------------------------------------------
+ * \file SetSessionPointRequestJSON.h
+ * \brief Header of SetSessionPointRequestJSON
+ *
+ * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#define _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
+#ifndef _SETSESSIONPOINTREQUESTJSON_H_70a7918f_a639_4664_bf8a_957ce1be2f0c_INCLUDED_
+#define _SETSESSIONPOINTREQUESTJSON_H_70a7918f_a639_4664_bf8a_957ce1be2f0c_INCLUDED_
 
-#include <QString>
-#include <QSharedPointer>
-#include "Channel.h"
-#include "Session.h"
+#include "JsonSerializer.h"
 
-#include "ConcurrentVector.h"
+#include <QDateTime>
 
-class User: public QObject
+class SetSessionPointRequestJSON: public JsonSerializer
 {
-  Q_OBJECT
-    QString m_login;
-  QString m_password;
-
-  QString m_result;
-  QString m_token;
-
-  QSharedPointer<Channels> m_channels;  // list of subscribed channels
-  QSharedPointer<Session> m_session;
-
-  protected:
-
-    void setToken(const QString&);
+  double m_latitude;
+  double m_longitude;
+  double m_radius;
+  QDateTime m_time;
+  qulonglong m_timeSlot;
+  bool m_isCurrentTime;
 
   public:
 
-    User(const QString& name, const QString& passw);
+    SetSessionPointRequestJSON(QObject *parent=0);
 
-    virtual qlonglong getId() const;
+    QByteArray getJson() const;
 
-    void subscribe(const QSharedPointer<Channel>& channel);
+    void parseJson(const QByteArray&);
 
-    void unsubscribe(const QSharedPointer<Channel>& channel);
+    double getLatitude() const;
+    double getLongitude() const;
+    double getRadius() const;
+    qulonglong getTimeSlot() const;
+    const QDateTime& getTime() const;
+    bool getIsTimeCurrent() const;
 
-    const QString& getLogin() const;
-    const QString& getPassword() const;
-    const QString& getToken() const;
-    const QSharedPointer<Channels> getSubscribedChannels() const;
+    void setLatitude(double latitude);
+    void setLongitude(double longitude);
+    void setRadius(double radius);
+    void setTimeSlot(const qulonglong&);
+    void setTime(const QDateTime& time/*=QDateTime::currentDateTime().toUTC()*/);
+    void setIsTimeCurrent(bool);
 
-    void setPassword(const QString password);
-
-    QSharedPointer<Session> getSession() const;
-    void setSession(QSharedPointer<Session> session);
-
-    virtual ~User();
-    // class User
-};
-
-typedef ConcurrentVector<User> Users;
-//_User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#endif
-
-/* ===[ End of file ]=== */
+};                                      //class SetSessionPointRequestJSON
+#endif                                  // _SETSESSIONPOINTREQUESTJSON_H_70a7918f_a639_4664_bf8a_957ce1be2f0c_INCLUDED_
