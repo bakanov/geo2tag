@@ -41,6 +41,7 @@
 #include <QString>
 #include <QSharedPointer>
 #include "Channel.h"
+#include "Action.h"
 
 #include "ConcurrentVector.h"
 
@@ -54,6 +55,11 @@ class User: public QObject
   QString m_token;
   // list of subscribed channels
   QSharedPointer<Channels> m_channels;
+
+  // list of actions over channels
+  QSharedPointer<Actions> m_actions;
+
+  QSharedPointer<Channel> m_channel;
 
   protected:
 
@@ -69,7 +75,8 @@ class User: public QObject
 
     void unsubscribe(const QSharedPointer<Channel>& channel);
 
-
+    void setChannelAction(QSharedPointer<Channel>& channel, QSharedPointer<Action>& action);
+    //bool isAllowed(QString login, QString channel, int action);
 
     const QString& getLogin() const;
     const QString& getPassword() const;

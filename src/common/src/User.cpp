@@ -105,6 +105,19 @@ void User::setToken(const QString &token)
   m_token = token;
 }
 
+void User::setChannelAction(QSharedPointer<Channel>& channel, QSharedPointer<Action>& action)
+{
+    m_channels->push_back(channel);
+    m_actions->push_back(action);
+    //m_channels(channel);
+    //m_actions(action);
+}
+
+/*bool User::isAllowed(QString login, QString channel, int action)
+{
+
+    return false;
+}*/
 
 User::~User()
 {

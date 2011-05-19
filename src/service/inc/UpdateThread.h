@@ -10,19 +10,19 @@
 #include "ChannelInternal.h"
 #include "DataChannel.h"
 #include "TimeSlotInternal.h"
-#include "ChannelAction.h"
+#include "ActionInternal.h"
+
 
 class UpdateThread: public QThread
 {
   Q_OBJECT
 
     QSharedPointer<Channels>     m_channelsContainer;
-  QSharedPointer<DataMarks>    m_tagsContainer;
-  QSharedPointer<Users>        m_usersContainer;
-  QSharedPointer<TimeSlots>    m_timeSlotsContainer;
-  QSharedPointer<DataChannels> m_dataChannelsMap;
-  //QSharedPointer<ChannelActions> m_channelActionsContainer; //--!!
-  //QMap<QPair<qlonglong,qlonglong>,int> m_channelAccessContainer;
+  QSharedPointer<DataMarks>      m_tagsContainer;
+  QSharedPointer<Users>          m_usersContainer;
+  QSharedPointer<TimeSlots>      m_timeSlotsContainer;
+  QSharedPointer<DataChannels>   m_dataChannelsMap;
+  QSharedPointer<Actions>        m_actionsContainer;
 
   QSqlDatabase m_database;
 
@@ -33,9 +33,8 @@ class UpdateThread: public QThread
   void loadTags(DataMarks &);
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
-  //void loadChannelActions(ChannelActions &); //--!!
-  //void loadChannelAccess(ChannelAccess &); //--!!
-  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&);//, ChannelActions&);
+  void loadActions(Actions &);
+  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&);
 
   void run();
 
@@ -47,7 +46,7 @@ class UpdateThread: public QThread
       const QSharedPointer<Channels>& channels,
       const QSharedPointer<TimeSlots>& timeSlots,
       const QSharedPointer<DataChannels>& dataChannelsMap,
-      //const QSharedPointer<ChannelActions> &channelActions,
+      const QSharedPointer<Actions>& actions,
       QObject *parent = 0);
 
     void lockWriting();

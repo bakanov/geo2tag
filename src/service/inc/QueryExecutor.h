@@ -26,6 +26,7 @@ class QueryExecutor : public QObject
     qlonglong nextChannelKey() const;
     qlonglong nextTagKey() const;
     qlonglong nextTimeSlotKey() const;
+    qlonglong nextChannelActionKey()const;
 
     const QString generateNewToken(const QString& login,const QString& password) const;
 
@@ -34,12 +35,17 @@ class QueryExecutor : public QObject
     QSharedPointer<User>     insertNewUser(const QSharedPointer<User>&);
     QSharedPointer<Channel>  insertNewChannel(const QSharedPointer<Channel>&);
     QSharedPointer<TimeSlot> insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
+    //QSharedPointer<Action>   insertNewAction(const QSharedPointer<Action>&);
+
     bool                     insertNewChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
     bool                     changeChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
     bool                     insertNewMarkTimeSlot(const QSharedPointer<DataMark>&, const QSharedPointer<TimeSlot>&);
     bool                     changeMarkTimeSlot(const QSharedPointer<DataMark>&, const QSharedPointer<TimeSlot>&);
     bool                     deleteChannelTimeSlot(const QSharedPointer<Channel>&);
     bool                     deleteMarkTimeSlot(const QSharedPointer<DataMark>&);
+
+    //bool                   insertNewUserChannelAction(const QSharedPointer<User>);
+    //bool                   changeUserActionChannel();
 
     signals:
 

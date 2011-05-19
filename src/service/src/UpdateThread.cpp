@@ -8,7 +8,7 @@ const QSharedPointer<Users> &users,
 const QSharedPointer<Channels> &channels,
 const QSharedPointer<TimeSlots> &timeSlots,
 const QSharedPointer<DataChannels>& dataChannelsMap,
-//const QSharedPointer<ChannelActions>& channelActions,
+const QSharedPointer<Actions>& actions,
 QObject *parent):
 QThread(parent),
 m_channelsContainer(channels),
@@ -16,7 +16,7 @@ m_tagsContainer(tags),
 m_usersContainer(users),
 m_timeSlotsContainer(timeSlots),
 m_dataChannelsMap(dataChannelsMap),
-//m_channelActionsContainer(channelActions),
+m_actionsContainer(actions),
 m_database(db)
 {
 }
@@ -51,22 +51,22 @@ void UpdateThread::run()
     DataMarks   tagsContainer(*m_tagsContainer);
     Channels    channelsContainer(*m_channelsContainer);
     TimeSlots   timeSlotsContainer(*m_timeSlotsContainer);
-    //ChannelActions channelActionsContainer(*m_channelActionsContainer);
+    Actions     actionsContainer(*m_actionsContainer);
 
     loadUsers(usersContainer);
     loadTags(tagsContainer);
     loadChannels(channelsContainer);
     loadTimeSlots(timeSlotsContainer);
-    //loadChannelActions(channelActionsContainer);
+    loadActions(actionsContainer);
 
     lockWriting();
     m_usersContainer->merge(usersContainer);
     m_tagsContainer->merge(tagsContainer);
     m_channelsContainer->merge(channelsContainer);
     m_timeSlotsContainer->merge(timeSlotsContainer);
-    //m_channelActionsContainer->merge(channelActionsContainer);
+    m_actionsContainer->merge(actionsContainer);
 
-    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);//, *m_channelActionsContainer);
+    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);
 
     for(int i=0; i<m_tagsContainer->size(); i++)
     {
@@ -197,9 +197,26 @@ void UpdateThread::loadTags(DataMarks &container)
   }
 }
 
-//loadChannelActions
+void UpdateThread::loadActions(Actions & container)
+{
+    QSqlQuery query(m_database);
+    query.exec("select id, mask, name from action;");
+    while (query.next())
+    {
+      qlonglong id = query.record().value("id").toLongLong();
+      if(container.exist(id))
+      {
+        // skip record
+        continue;
+      }
+      int mask = query.record().value("mask").toInt();
+      QString name = query.record().value("name").toString();
+      DbAction *newAction = new DbAction(id,mask,name);
+      QSharedPointer<DbAction> pointer(newAction);
+      container.push_back(pointer);
+}
 
-void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &channels, TimeSlots & timeSlots)//, ChannelActions & channelActions)
+void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &channels, TimeSlots & timeSlots)
 {
   {
     QSqlQuery query(m_database);
@@ -276,16 +293,19 @@ void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &ch
       tag->setTimeSlot(timeslot);
     }
   }
-  /*{
+  {
     QSqlQuery query(m_database);
-    query.exec("select * from channel_actions;");
+    query.exec("select user_id, channel_id, action from channel_action;");
     while (query.next())
     {
-        qlonglong user_id = query.record().value("user_id").toULongLong();
-        qlonglong channel_id = query.record().value("channel_id").toULongLong();
-        int action = query.record().value("action").Int;
+        qlonglong user_id = query.record().value("user_id").toLongLong();
+        qlonglong channel_id = query.record().value("channel_id").toLongLong();
+        int action = query.record().value("action").toInt();
 
+        QSharedPointer<User> user = users.item(user_id);
+        QSharedPointer<Channel> channel = channels.item(channel_id);
+        user->setChannelAction(channel,action);
     }
-    }*/
+    }
 
 }

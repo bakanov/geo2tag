@@ -7,7 +7,7 @@
 #include "Channel.h"
 #include "Action.h"
 
-typedef QMap<QPair<User, Channel>, Action> ChannelActions;
+typedef ConcurrentVector<QMap<QPair<User, Channel>, Action> > ChannelActions;
 
 /*class ChannelAction: public QObject
 {

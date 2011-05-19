@@ -46,6 +46,8 @@
 
 #include "ConcurrentVector.h"
 #include "TimeSlot.h"
+//#include "User.h"
+//#include "Action.h"
 
 class Channel: public QObject
 {
@@ -57,6 +59,7 @@ class Channel: public QObject
   bool m_isDisplayed;
   QSharedPointer<TimeSlot> m_timeSlot;
   bool m_timeSlotIsDefault;
+
 
   public:
 
@@ -87,6 +90,7 @@ class Channel: public QObject
 
     bool timeSlotIsDefault() const;
     void setDefaultTimeSlot(bool);
+
 
     virtual ~Channel();
     // class Channel
