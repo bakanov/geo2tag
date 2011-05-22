@@ -54,7 +54,8 @@ HEADERS += \
 	   inc/UpdateThread.h \
            inc/QueryExecutor.h \
     	   inc/TimeSlotInternal.h \
-    inc/ActionInternal.h
+    inc/ActionInternal.h \
+    inc/ChannelActionInternal.h
 
 
 SOURCES += src/main.cpp \
@@ -67,7 +68,8 @@ SOURCES += src/main.cpp \
            src/UpdateThread.cpp \
            src/QueryExecutor.cpp \
            src/TimeSlotInternal.cpp \
-    src/ActionInternal.cpp
+    src/ActionInternal.cpp \
+    src/ChannelActionInternal.cpp
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
 OBJECTS_DIR = .obj

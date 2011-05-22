@@ -130,6 +130,8 @@ namespace common
       m_channelsContainer,
       m_timeSlotsContainer,
       m_dataChannelsMap,
+      //m_action
+      //m_channelAction
       NULL);
 
     m_updateThread->start();

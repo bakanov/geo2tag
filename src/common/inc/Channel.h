@@ -46,8 +46,7 @@
 
 #include "ConcurrentVector.h"
 #include "TimeSlot.h"
-//#include "User.h"
-//#include "Action.h"
+
 
 class Channel: public QObject
 {

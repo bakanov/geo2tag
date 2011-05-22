@@ -3,13 +3,10 @@
 
 #include "QMap"
 #include "QPair"
-#include "User.h"
-#include "Channel.h"
-#include "Action.h"
+#include "ConcurrentVector.h"
 
-typedef ConcurrentVector<QMap<QPair<User, Channel>, Action> > ChannelActions;
 
-/*class ChannelAction: public QObject
+class ChannelAction: public QObject
 {
     Q_OBJECT
 
@@ -34,7 +31,8 @@ public:
     virtual ~ChannelAction();
 
 
-};*/
+};
+typedef ConcurrentVector<QMap<QPair<qlonglong,qlonglong>,int> > ChannelActions;
 
 
 
