@@ -41,12 +41,13 @@
 #ifndef _defines_H_CB67F287_A4BC_4745_9700_14421ED3AE3D_INCLUDED_
 #define _defines_H_CB67F287_A4BC_4745_9700_14421ED3AE3D_INCLUDED_
 #include <QString>
+#include <QPoint>
 
 QString getServerUrl();
 void setServerUrl(QString serverUrl);
 int getServerPort();
 void setServerPort(int port);
-#define DEFAULT_SERVER "http://localhost/"
+#define DEFAULT_SERVER "http://tracklife.ru/"
 #define DEFAULT_PORT 80
 
 // "demo"
@@ -73,10 +74,15 @@ void setServerPort(int port);
 
 #define TRACKER_TAG_LABEL   "tracker's tag"
 
-#define DEFAULT_LATITUDE    60
-#define DEFAULT_LONGITUDE   30
+#define DEFAULT_LATITUDE   ((double) 59.91446)
+#define DEFAULT_LONGITUDE  ((double) 30.489442)
 
 #define TRACKER_MSECS_TIMEOUT 500
+
+
+extern uint qHash(const QPoint & p);
+
+
 //_defines_H_CB67F287_A4BC_4745_9700_14421ED3AE3D_INCLUDED_
 #endif
 
