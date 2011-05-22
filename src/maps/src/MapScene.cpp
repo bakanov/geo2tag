@@ -256,9 +256,15 @@ void MapScene::set_zoom()
   foreach(TilePoint tp, m_tiles.keys())
   {
     if(tp.second != m_zoom)
-      m_tiles.value(tp)->hide();
-    else
-      m_tiles.value(tp)->show();
+	{
+	  QGraphicsItem * to_remove = m_tiles.value(tp);
+	  this->removeItem(to_remove);
+      m_tiles.remove(tp);
+	  delete(to_remove);
+	  to_remove = 0;
+	}
+    //else
+      //m_tiles.value(tp)->show();
   }
 
   qreal max_point = (pow(2,m_zoom) - 1)*256 + 256;

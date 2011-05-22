@@ -83,6 +83,10 @@ void MapsUploader::handleNetworkData(QNetworkReply *reply)
 
   if(!img.isNull())
   {
+    int index = m_loaded.indexOf(qMakePair(tp,zoom));
+	if(index != -1)
+      m_loaded.remove(index);
+
     QString file_name = m_file_store_dir.path() + "/"
       + QString::number(zoom) + "/"
       + QString::number(tp.x()) + "_"
@@ -134,6 +138,10 @@ void MapsUploader::downloadTile(const TilePoint & point)
 
   if(QFile::exists(file_name))
   {
+    int index = m_loaded.indexOf(point);
+	if(index != -1)
+		m_loaded.remove(index);
+
     if(!m_background_mode)
     {
       QFile pixmap_file(file_name, this);
@@ -173,9 +181,9 @@ void MapsUploader::uploadTiles(QVector<TilePoint> & tiles_to_upload)
     if(m_loaded.contains(tp))
       continue;
 
-    this->downloadTile(tp);
-
     m_loaded.push_back(tp);
+
+    this->downloadTile(tp);
   }
 }
 
