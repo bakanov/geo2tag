@@ -106,8 +106,6 @@ namespace common
     QByteArray processSetSessionPointQuery(const QByteArray&);
     QByteArray processSetDefaultSessionPointQuery(const QByteArray&);
 
-    QByteArray processCheckTokensQuery(const QByteArray&);
-
     public:
 
       static DbObjectsCollection& getInstance();

@@ -133,8 +133,6 @@ namespace common
     m_processors.insert("getSessionPoint", &DbObjectsCollection::processGetSessionPointQuery);
     m_processors.insert("setDefaultSessionPoint", &DbObjectsCollection::processSetDefaultSessionPointQuery);
 
-    m_processors.insert("checkKeys", &DbObjectsCollection::processCheckTokensQuery);
-
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
     database.setHostName("localhost");
     database.setDatabaseName("geo2tag");
@@ -1211,15 +1209,6 @@ namespace common
     answer.append(response.getJson());
     syslog(LOG_INFO, "answer: %s", answer.data());
     return answer;
-  }
-
-  QByteArray DbObjectsCollection::processCheckTokensQuery(const QByteArray& data)
-  {
-    QList<QString> keys = m_sessionTokens.keys();
-    for (int ii=0; ii!=keys.size(); ++ii)
-      syslog(LOG_INFO, "key = %s", keys.at(ii).toStdString().c_str());
-
-    return data;
   }
 
 }                                       // namespace common
