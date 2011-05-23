@@ -3,7 +3,7 @@
 #include <iostream>
 #include "server.h"
 #include "DbSession.h"
-//#include "UpdateThread.h"
+#include "UpdateThread.h"
 #include "UserInternal.h"
 #include "ChannelInternal.h"
 
