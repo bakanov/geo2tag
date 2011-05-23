@@ -27,7 +27,7 @@ class QueryExecutor : public QObject
     qlonglong nextTagKey() const;
     qlonglong nextTimeSlotKey() const;
 
-    const QString generateNewToken(const QString& login,const QString& password) const;
+    // const QString generateNewToken(const QString& login,const QString& password) const;
 
     bool                     subscribeChannel(const QSharedPointer<User>& user,const QSharedPointer<Channel>& channel);
     QSharedPointer<DataMark> insertNewTag(const QSharedPointer<DataMark>&);

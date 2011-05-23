@@ -48,21 +48,9 @@
 
 class GetSessionPointResponseJSON: public JsonSerializer
 {
-  double m_latitude;
-  double m_longitude;
-  double m_radius;
-  QDateTime m_time;
-  qulonglong m_timeSlot;
-
   public:
 
     GetSessionPointResponseJSON(QObject *parent=0);
-
-    double getLatitude() const;
-    double getLongitude() const;
-    double getRadius() const;
-    qulonglong getTimeSlot() const;
-    const QDateTime& getTime() const;
 
     QByteArray getJson() const;
 

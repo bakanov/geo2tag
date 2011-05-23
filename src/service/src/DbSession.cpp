@@ -90,11 +90,15 @@
 #include "SetDefaultSessionPointRequestJSON.h"
 #include "SetDefaultSessionPointResponseJSON.h"
 
+#include "QuitRequestJSON.h"
+#include "QuitResponseJSON.h"
+
 #include "JsonTimeSlot.h"
 #include "ChannelInternal.h"
 
 #include <QtSql>
 #include <QMap>
+#include <QUuid>
 
 namespace common
 {
@@ -112,6 +116,7 @@ namespace common
   {
 
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
+    m_processors.insert("quit", &DbObjectsCollection::processQuitQuery);
     m_processors.insert("apply", &DbObjectsCollection::processAddNewMarkQuery);
     m_processors.insert("rss", &DbObjectsCollection::processRssFeedQuery);
     m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
@@ -127,6 +132,8 @@ namespace common
     m_processors.insert("setSessionPoint", &DbObjectsCollection::processSetSessionPointQuery);
     m_processors.insert("getSessionPoint", &DbObjectsCollection::processGetSessionPointQuery);
     m_processors.insert("setDefaultSessionPoint", &DbObjectsCollection::processSetDefaultSessionPointQuery);
+
+    m_processors.insert("checkKeys", &DbObjectsCollection::processCheckTokensQuery);
 
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
     database.setHostName("localhost");
@@ -173,21 +180,14 @@ namespace common
     return (*this.*method)(body);
   }
 
-  QSharedPointer<User> DbObjectsCollection::findUserFromToken(const QSharedPointer<User> &dummyUser) const
+  const QString DbObjectsCollection::generateNewToken() const
   {
-    QSharedPointer<User> realUser;      // Null pointer
-    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    syslog(LOG_INFO, "checking user's key: %s from %d known users", dummyUser->getToken().toStdString().c_str(),
-      currentUsers.size());
-    for(int i=0; i<currentUsers.size(); i++)
-    {
-      if(currentUsers.at(i)->getToken() == dummyUser->getToken())
-      {
-        realUser = currentUsers.at(i);
-        break;
-      }
-    }
-    return realUser;
+    QString result = QUuid::createUuid().toString();
+    int size = result.size();
+    result.remove((size - 1), 1);
+    result.remove(0, 1);
+    syslog(LOG_INFO,"Token = %s",result.toStdString().c_str());
+    return result;
   }
 
   QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
@@ -215,24 +215,39 @@ namespace common
         }
         else
         {
+          DefaultResponseJSON response;
           response.setStatus(error);
           response.setStatusMessage("Wrong password");
+          answer.append(response.getJson());
+          return answer;
         }
       }
     }
+
     answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
     if(realUser.isNull())
     {
+      DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Wrong login or password");
+      answer.append(response.getJson());
+      return answer;
     }
     else
     {
       response.setStatus(ok);
       response.setStatusMessage("Authorization was successful");
-      response.addUser(realUser);
     }
 
+    QString newToken = generateNewToken();
+    QSharedPointer<Session> defaultSession = QSharedPointer<Session>(new Session());
+    defaultSession->setUser(realUser);
+
+    m_updateThread->lockWriting();
+    m_sessionTokens.insert(newToken, defaultSession);
+    m_updateThread->unlockWriting();
+
+    response.setAuthToken(newToken);
     answer.append(response.getJson());
     syslog(LOG_INFO, "answer: %s", answer.data());
     return answer;
@@ -246,16 +261,19 @@ namespace common
 
     request.parseJson(data);
     QSharedPointer<DataMark> dummyTag = request.getTags()->at(0);
-    QSharedPointer<User> dummyUser = dummyTag->getUser();
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
 
-    if(realUser.isNull())               //
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
     {
+      DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
     }
+
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
 
     QSharedPointer<Channel> dummyChannel = dummyTag->getChannel();
     QSharedPointer<Channel> realChannel;// Null pointer
@@ -307,15 +325,19 @@ namespace common
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
     request.parseJson(data);
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
-    if(realUser.isNull())
+
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
     {
-      response.setStatus("Error");
+      DefaultResponseJSON response;
+      response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
     }
+
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
 
     QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
     response.setChannels(channels);
@@ -332,16 +354,19 @@ namespace common
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
     request.parseJson(data);
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
-    if(realUser.isNull())
+
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
     {
-      RSSFeedResponseJSON response;
+      DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
     }
+
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
 
     QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
     DataChannels feed;
@@ -378,16 +403,18 @@ namespace common
     syslog(LOG_INFO, "Starting Json parsing for SubscribeQuery");
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for SubscribeQuery");
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);;
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
 
-    if(realUser.isNull())
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
     }
+
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
 
     QSharedPointer<Channel> dummyChannel = request.getChannels()->at(0);;
 
@@ -443,6 +470,7 @@ namespace common
     {
       if(currentUsers.at(i)->getLogin() == dummyUser->getLogin())
       {
+        DefaultResponseJSON response;
         response.setStatus(error);
         response.setStatusMessage("Username already exists!");
         answer.append(response.getJson());
@@ -455,19 +483,27 @@ namespace common
     QSharedPointer<User> addedUser = m_queryExecutor->insertNewUser(dummyUser);
     if(!addedUser)
     {
+      DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Internal server error ):");
       answer.append(response.getJson());
       syslog(LOG_INFO, "answer: %s", answer.data());
       return answer;
     }
+
+    QString newToken = generateNewToken();
+    QSharedPointer<Session> defaultSession = QSharedPointer<Session>(new Session());
+    defaultSession->setUser(addedUser);
+
     m_updateThread->lockWriting();
     // Here will be adding user into user container
     m_usersContainer->push_back(addedUser);
+    m_sessionTokens.insert(newToken, defaultSession);
     m_updateThread->unlockWriting();
 
     response.setStatus(ok);
     response.setStatusMessage("User added");
+    response.setAuthToken(newToken);
     answer.append(response.getJson());
     syslog(LOG_INFO, "answer: %s", answer.data());
     return answer;
@@ -484,10 +520,10 @@ namespace common
     syslog(LOG_INFO, "Starting Json parsing for AddChannelQuery");
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for AddChanenlQuery");
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
 
-    if(realUser.isNull())
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
@@ -548,10 +584,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for GetTimeSlotQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       DefaultResponseJSON response;
       response.setStatus(error);
@@ -596,10 +631,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for SetTimeSlotQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
@@ -737,10 +771,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for GetTimeSlotMarkQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       DefaultResponseJSON response;
       response.setStatus(error);
@@ -785,10 +818,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for SetTimeSlotMarkQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
@@ -905,10 +937,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for SetDefaultTimeSlotQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
@@ -977,10 +1008,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for SetDefaultTimeSlotMarkQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
@@ -1049,10 +1079,9 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for GetSessionPointQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       DefaultResponseJSON response;
       response.setStatus(error);
@@ -1061,7 +1090,8 @@ namespace common
       return answer;
     }
 
-    response.addUser(realUser);;
+    QSharedPointer<Session> session = m_sessionTokens.value(token);
+    response.addSession(session);
     answer.append(response.getJson());
     syslog(LOG_INFO, "answer: %s", answer.data());
     return answer;
@@ -1078,26 +1108,24 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for GetSessionPointQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
       DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
-    }                                                         
+    }
 
-    m_updateThread->lockWriting();    
-    realUser->getSession()->setLatitude(request.getLatitude());
-    realUser->getSession()->setLongitude(request.getLongitude());
-    realUser->getSession()->setRadius(request.getRadius());
-    realUser->getSession()->setTimeSlot(request.getTimeSlot());
-    realUser->getSession()->setIsTimeCurrent(request.getIsTimeCurrent());
-    if (!(request.getIsTimeCurrent()))
-      realUser->getSession()->setTime(request.getTime());
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
+
+    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
+    dummySession->setUser(realUser);
+
+    m_updateThread->lockWriting();
+    m_sessionTokens[token] = dummySession;
     m_updateThread->unlockWriting();
 
     response.setStatus(ok);
@@ -1118,22 +1146,23 @@ namespace common
     request.parseJson(data);
     syslog(LOG_INFO, "Json parsed for GetDefaultSessionPointQuery");
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUserFromToken(dummyUser);
+    QString token = request.getAuthToken();
 
-    if(realUser.isNull())
+    if (!(m_sessionTokens.contains(token)))
     {
-      DefaultResponseJSON response;
       response.setStatus(error);
       response.setStatusMessage("Wrong authentification key");
       answer.append(response.getJson());
       return answer;
     }
 
-    QSharedPointer<Session> session = QSharedPointer<Session>(new Session());
+    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
+
+    QSharedPointer<Session> dummySession = QSharedPointer<Session>(new Session());
+    dummySession->setUser(realUser);
 
     m_updateThread->lockWriting();
-    realUser->setSession(session);
+    m_sessionTokens[token] = dummySession;
     m_updateThread->unlockWriting();
 
     response.setStatus(ok);
@@ -1143,7 +1172,57 @@ namespace common
     return answer;
   }
 
+  QByteArray DbObjectsCollection::processQuitQuery(const QByteArray& data)
+  {
+    syslog(LOG_INFO, "starting QuitQuery processing");
+    QuitRequestJSON request;
+    syslog(LOG_INFO, "QuitRequestJSON created, now create QuitResponseJSON ");
+    QuitResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    syslog(LOG_INFO, "Starting Json parsing for QuitQuery");
+    request.parseJson(data);
+    syslog(LOG_INFO, "Json parsed for QuitQuery");
+
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
+    {
+      syslog(LOG_INFO, "test");
+      response.setStatus(error);
+      response.setStatusMessage("Wrong authentification key");
+      answer.append(response.getJson());
+      return answer;
+    }
+
+    m_updateThread->lockWriting();
+    int numberOfItems = m_sessionTokens.remove(token);
+    m_updateThread->unlockWriting();
+
+    if (numberOfItems == 0)
+    {
+      response.setStatus(error);
+      response.setStatusMessage("Internal server error ):");
+      answer.append(response.getJson());
+      return answer;
+    }
+
+    response.setStatus(ok);
+    response.setStatusMessage("User have quitted the system");
+    answer.append(response.getJson());
+    syslog(LOG_INFO, "answer: %s", answer.data());
+    return answer;
+  }
+
+  QByteArray DbObjectsCollection::processCheckTokensQuery(const QByteArray& data)
+  {
+    QList<QString> keys = m_sessionTokens.keys();
+    for (int ii=0; ii!=keys.size(); ++ii)
+      syslog(LOG_INFO, "key = %s", keys.at(ii).toStdString().c_str());
+
+    return data;
+  }
+
 }                                       // namespace common
 
 
-/* ===[ End of file ]=== */
+///* ===[ End of file ]=== */

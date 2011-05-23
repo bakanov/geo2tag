@@ -4,6 +4,7 @@
 
 class LoginRequestJSON: public JsonSerializer
 {
+  Q_OBJECT;
   public:
     LoginRequestJSON(QObject *parent=0);
 

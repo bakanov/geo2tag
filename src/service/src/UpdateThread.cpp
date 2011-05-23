@@ -90,7 +90,8 @@ void UpdateThread::run()
 void UpdateThread::loadUsers(Users &container)
 {
   QSqlQuery query(m_database);
-  query.exec("select id, login, password, token from users order by id;");
+  query.exec("select id, login, password from users order by id;");
+  //query.exec("select id, login, password, token from users order by id;");
   while (query.next())
   {
     qlonglong id = query.record().value("id").toLongLong();
@@ -101,9 +102,11 @@ void UpdateThread::loadUsers(Users &container)
     }
     QString login = query.record().value("login").toString();
     QString password = query.record().value("password").toString();
-    QString token = query.record().value("token").toString();
-    syslog(LOG_INFO,"Pushing | %lld | %s | %s ",id,login.toStdString().c_str(),token.toStdString().c_str());
-    DbUser *newUser = new DbUser(login,password,id,token);
+    //QString token = query.record().value("token").toString();
+    //syslog(LOG_INFO,"Pushing | %lld | %s | %s ",id,login.toStdString().c_str(),token.toStdString().c_str());
+    // DbUser *newUser = new DbUser(login,password,id,token);
+    syslog(LOG_INFO,"Pushing | %lld | %s ",id,login.toStdString().c_str());
+    DbUser *newUser = new DbUser(login,password,id);
     QSharedPointer<DbUser> pointer(newUser);
     container.push_back(pointer);
   }

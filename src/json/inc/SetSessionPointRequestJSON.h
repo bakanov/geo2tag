@@ -47,13 +47,6 @@
 
 class SetSessionPointRequestJSON: public JsonSerializer
 {
-  double m_latitude;
-  double m_longitude;
-  double m_radius;
-  QDateTime m_time;
-  qulonglong m_timeSlot;
-  bool m_isCurrentTime;
-
   public:
 
     SetSessionPointRequestJSON(QObject *parent=0);
@@ -61,20 +54,6 @@ class SetSessionPointRequestJSON: public JsonSerializer
     QByteArray getJson() const;
 
     void parseJson(const QByteArray&);
-
-    double getLatitude() const;
-    double getLongitude() const;
-    double getRadius() const;
-    qulonglong getTimeSlot() const;
-    const QDateTime& getTime() const;
-    bool getIsTimeCurrent() const;
-
-    void setLatitude(double latitude);
-    void setLongitude(double longitude);
-    void setRadius(double radius);
-    void setTimeSlot(const qulonglong&);
-    void setTime(const QDateTime& time/*=QDateTime::currentDateTime().toUTC()*/);
-    void setIsTimeCurrent(bool);
 
 };                                      //class SetSessionPointRequestJSON
 #endif                                  // _SETSESSIONPOINTREQUESTJSON_H_70a7918f_a639_4664_bf8a_957ce1be2f0c_INCLUDED_

@@ -6,6 +6,7 @@
 class LoginResponseJSON : public JsonSerializer
 {
   Q_OBJECT;
+
   public:
     LoginResponseJSON(QObject *parent=0);
 

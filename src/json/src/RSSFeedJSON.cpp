@@ -146,7 +146,7 @@ QByteArray RSSFeedResponseJSON::getJson() const
       jtag["description"] = tag->getDescription();
       jtag["latitude"] = tag->getLatitude();
       jtag["longitude"] = tag->getLongitude();
-      jtag["user"] = tag->getUser()->getLogin();
+      //jtag["user"] = tag->getUser()->getLogin();
       jtag["pubDate"] = tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz");
       jtags.append(jtag);
     }

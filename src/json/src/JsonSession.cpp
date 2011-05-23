@@ -1,6 +1,6 @@
 
 /*
- * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
+ * Copyright 2011  Tatiana Trofimova trotava@gmail.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,29 +29,48 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
 /*! ---------------------------------------------------------------
- * \file GetSessionPointRequestJSON.h
- * \brief Header of GetSessionPointRequestJSON
+ *
+ *
+ * \file JsonSession.cpp
+ * \brief JsonSession implementation
  *
  * File description
  *
- * PROJ: OSLL/geo2tag
+ * PROJ: OSLL/geoblog
  * ---------------------------------------------------------------- */
 
-#ifndef _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
-#define _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+#include "JsonSession.h"
 
-#include "JsonSerializer.h"
+qlonglong JsonSession::globalSessionId = 0;
 
-class GetSessionPointRequestJSON: public JsonSerializer
+JsonSession::JsonSession(double latitude,
+double longitude,
+double radius,
+qulonglong timeSlot,
+bool isCurrentTime,
+const QDateTime& time):
+Session(latitude, longitude, radius, timeSlot, isCurrentTime, time),
+m_id(globalSessionId++)
 {
-  public:
+}
 
-    GetSessionPointRequestJSON(QObject *parent=0);
 
-    QByteArray getJson() const;
+qlonglong JsonSession::getId() const
+{
+  return m_id;
+}
 
-    void parseJson(const QByteArray&);
-};                                      //class GetSessionPointRequestJSON
-#endif                                  // _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+
+void JsonSession::setId(qlonglong id)
+{
+  m_id=id;
+}
+
+
+JsonSession::~JsonSession()
+{
+}
+
+
+/* ===[ End of file ]=== */

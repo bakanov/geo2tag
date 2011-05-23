@@ -46,12 +46,14 @@
 #include <QtSql>
 #include <QThread>
 #include <QMap>
+#include <QHash>
 #include </usr/include/qt4/QtSql/qsql_psql.h>
 #include "DataMarks.h"
 #include "Channel.h"
 #include "DataChannel.h"
 #include "User.h"
 #include "TimeSlot.h"
+#include "Session.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 
@@ -77,14 +79,17 @@ namespace common
 
     QueryExecutor *             m_queryExecutor;
 
+    QHash<QString, QSharedPointer<Session> > m_sessionTokens;
+
     static const QString error;
     static const QString ok;
 
     DbObjectsCollection();
 
-    QSharedPointer<User> findUserFromToken(const QSharedPointer<User>&) const;
+    const QString generateNewToken() const;
 
     QByteArray processLoginQuery(const QByteArray&);
+    QByteArray processQuitQuery(const QByteArray&);
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAddNewMarkQuery(const QByteArray&);
     QByteArray processRssFeedQuery(const QByteArray&);
@@ -100,6 +105,8 @@ namespace common
     QByteArray processGetSessionPointQuery(const QByteArray&);
     QByteArray processSetSessionPointQuery(const QByteArray&);
     QByteArray processSetDefaultSessionPointQuery(const QByteArray&);
+
+    QByteArray processCheckTokensQuery(const QByteArray&);
 
     public:
 

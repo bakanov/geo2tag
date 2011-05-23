@@ -3,7 +3,8 @@
 JsonSerializer::JsonSerializer(QObject * parent):QObject(parent),
 m_channelsContainer(new Channels),
 m_tagsContainer(new DataMarks),
-m_usersContainer(new Users)
+m_usersContainer(new Users),
+m_sessionsContainer(new Sessions)
 {
 }
 
@@ -32,6 +33,12 @@ QSharedPointer<DataMarks> JsonSerializer::getTags() const
 }
 
 
+QSharedPointer<Sessions> JsonSerializer::getSessions() const
+{
+  return m_sessionsContainer;
+}
+
+
 void JsonSerializer::addChannel(const QSharedPointer<Channel> &channel)
 {
   m_channelsContainer->push_back(channel);
@@ -47,6 +54,12 @@ void JsonSerializer::addTag(const QSharedPointer<DataMark> &tag)
 void JsonSerializer::addUser(const QSharedPointer<User> &tag)
 {
   m_usersContainer->push_back(tag);
+}
+
+
+void JsonSerializer::addSession(const QSharedPointer<Session> &session)
+{
+  m_sessionsContainer->push_back(session);
 }
 
 
@@ -67,6 +80,18 @@ const QString& JsonSerializer::getStatus() const
 const QString& JsonSerializer::getStatusMessage() const
 {
   return m_statusMessage;
+}
+
+
+const QString& JsonSerializer::getAuthToken() const
+{
+  return m_token;
+}
+
+
+void JsonSerializer::setAuthToken(const QString & token)
+{
+  m_token = token;
 }
 
 

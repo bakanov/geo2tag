@@ -21,22 +21,23 @@ HEADERS += \
            inc/JsonDataMark.h \
            inc/JsonChannel.h \
            inc/JsonTimeSlot.h \
-	         inc/JsonSerializer.h \
-	         inc/LoginRequestJSON.h \
-	         inc/LoginResponseJSON.h \
-	         inc/AddUserRequestJSON.h \
-	         inc/AddUserResponseJSON.h \
-	         inc/AddNewMarkRequestJSON.h \
-	         inc/AddNewMarkResponseJSON.h \
-	         inc/SubscribeChannelResponseJSON.h \
-	         inc/UnsubscribeChannelResponse.h \
-	         inc/SubscribedChannelsRequestJSON.h \
-	         inc/SubscribedChannelsResponseJSON.h \
-	         inc/AddChannelRequestJSON.h \
-	         inc/AddChannelResponseJSON.h \
+           inc/JsonSession.h \
+                 inc/JsonSerializer.h \
+                 inc/LoginRequestJSON.h \
+                 inc/LoginResponseJSON.h \
+                 inc/AddUserRequestJSON.h \
+                 inc/AddUserResponseJSON.h \
+                 inc/AddNewMarkRequestJSON.h \
+                 inc/AddNewMarkResponseJSON.h \
+                 inc/SubscribeChannelResponseJSON.h \
+                 inc/UnsubscribeChannelResponse.h \
+                 inc/SubscribedChannelsRequestJSON.h \
+                 inc/SubscribedChannelsResponseJSON.h \
+                 inc/AddChannelRequestJSON.h \
+                 inc/AddChannelResponseJSON.h \
                  inc/GetTimeSlotRequestJSON.h \
                  inc/GetTimeSlotResponseJSON.h \
-	         inc/DefaultResponseJSON.h \
+                 inc/DefaultResponseJSON.h \
                  inc/SetTimeSlotRequestJSON.h \
                  inc/SetTimeSlotResponseJSON.h \
                  inc/GetTimeSlotMarkRequestJSON.h \
@@ -52,7 +53,9 @@ HEADERS += \
     inc/SetSessionPointRequestJSON.h \
     inc/SetSessionPointResponseJSON.h \
     inc/SetDefaultSessionPointRequestJSON.h \
-    inc/SetDefaultSessionPointResponseJSON.h
+    inc/SetDefaultSessionPointResponseJSON.h \
+    inc/QuitRequestJSON.h \
+    inc/QuitResponseJSON.h
 
 SOURCES += \
            src/ChannelListJSON.cpp \
@@ -65,8 +68,9 @@ SOURCES += \
            src/JsonTimeSlot.cpp \
            src/JsonDataMark.cpp \
            src/JsonSerializer.cpp \
-           src/LoginRequestJSON.cpp \
+           src/JsonSession.cpp \
            src/LoginResponseJSON.cpp \
+           src/LoginRequestJSON.cpp \
            src/AddNewMarkRequestJSON.cpp \
            src/AddChannelRequestJSON.cpp \
            src/GetTimeSlotRequestJSON.cpp \

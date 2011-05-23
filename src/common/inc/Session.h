@@ -52,6 +52,7 @@
 #include <QDateTime>
 
 #include "ConcurrentVector.h"
+#include "User.h"
 
 class Session: public QObject
 {
@@ -63,11 +64,14 @@ class Session: public QObject
   qulonglong m_timeSlot;                // 'radius' of time zone for drawing tags (in minutes)
   bool m_isCurrentTime;
   QDateTime m_time;                     // 'centre' of time zone for drawing tags
+  QSharedPointer<User> m_user;
 
   public:
     Session();
 
     Session(double latitude, double longitude, double radius, qulonglong timeSlot, bool isCurrentTime, QDateTime time);
+
+    virtual qlonglong getId() const;
 
     double getLatitude() const;
     void setLatitude(const double&);
@@ -87,10 +91,14 @@ class Session: public QObject
     bool getIsTimeCurrent() const;
     void setIsTimeCurrent(bool);
 
+    QSharedPointer<User> getUser() const;
+    void setUser(QSharedPointer<User> user);
+
+    virtual ~Session();
+
   private:
     Session(const Session&);
     Session& operator=(const Session&);
-
 };                                      // class Session
 
 typedef ConcurrentVector<Session> Sessions;

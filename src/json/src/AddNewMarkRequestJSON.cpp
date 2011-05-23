@@ -24,7 +24,7 @@ void AddNewMarkRequestJSON::parseJson(const QByteArray &data)
     return;
   }
 
-  QString token = result["auth_token"].toString();
+  m_token = result["auth_token"].toString();
   QString channel_name = result["channel"].toString();
   QString title = result["title"].toString();
   QString link = result["link"].toString();
@@ -33,11 +33,9 @@ void AddNewMarkRequestJSON::parseJson(const QByteArray &data)
   double latitude = result["latitude"].toDouble();
   QDateTime time = QDateTime::fromString(result["time"].toString(), "dd MM yyyy HH:mm:ss.zzz");
 
-  QSharedPointer<User>  user(new JsonUser("unknown", "unknown", token));
   QSharedPointer<Channel> channel(new JsonChannel(channel_name, "unknown"));
   QSharedPointer<DataMark> tag(new JsonDataMark(latitude, longitude, title, description, link, time));
   tag->setChannel(channel);
-  tag->setUser(user);
   m_tagsContainer->push_back(tag);
 }
 
@@ -47,7 +45,7 @@ QByteArray AddNewMarkRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
   QSharedPointer<DataMark> mark = m_tagsContainer->at(0);
-  request.insert("auth_token", mark->getUser()->getToken());
+  request.insert("auth_token", m_token);
   request.insert("channel", mark->getChannel()->getName());
   request.insert("title", mark->getLabel().isEmpty()? "New mark":mark->getLabel());
   request.insert("link", mark->getUrl());

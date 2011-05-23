@@ -18,7 +18,7 @@ QByteArray SetTimeSlotRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_usersContainer->at(0)->getToken());
+  request.insert("auth_token", m_token);
   request.insert("channel", m_channelsContainer->at(0)->getName());
   request.insert("timeSlot", m_channelsContainer->at(0)->getTimeSlot()->getSlot());
 
@@ -38,11 +38,10 @@ void SetTimeSlotRequestJSON::parseJson(const QByteArray &data)
     return;
   }
 
-  QString token = result["auth_token"].toString();
+  m_token = result["auth_token"].toString();
   QString channel = result["channel"].toString();
   qulonglong timeSlot = result["timeSlot"].toULongLong();
 
-  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("unknown","unknown", token)));
   m_channelsContainer->push_back(QSharedPointer<Channel> (new JsonChannel(channel, "unknown", "unknown")));
   m_channelsContainer->at(0)->setTimeSlot(QSharedPointer<TimeSlot>(new JsonTimeSlot(timeSlot)));
 }

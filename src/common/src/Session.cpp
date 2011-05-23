@@ -49,6 +49,7 @@ m_timeSlot(525600),
 m_isCurrentTime(1),
 m_time(QDateTime())
 {
+  m_user = QSharedPointer<User>(NULL);
 }
 
 
@@ -64,6 +65,8 @@ m_radius(radius),
 m_timeSlot(timeSlot),
 m_isCurrentTime(isCurrentTime)
 {
+  m_user = QSharedPointer<User>(NULL);
+
   if (!isCurrentTime)
     m_time = time;
   else
@@ -142,4 +145,28 @@ bool Session::getIsTimeCurrent() const
 void Session::setIsTimeCurrent(bool vl)
 {
   m_isCurrentTime = vl;
+}
+
+
+void Session::setUser(QSharedPointer<User> user)
+{
+  m_user=user;
+}
+
+
+QSharedPointer<User> Session::getUser() const
+{
+  return m_user;
+}
+
+
+qlonglong Session::getId() const
+{
+  // Database is not contain 0 in sequences, see scripts/base.sql
+  return 0;
+}
+
+
+Session::~Session()
+{
 }

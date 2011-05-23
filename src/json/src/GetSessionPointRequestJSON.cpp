@@ -23,8 +23,9 @@ void GetSessionPointRequestJSON::parseJson(const QByteArray &data)
     return;
   }
 
-  QString authToken = result["auth_token"].toString();
-  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("unknown","unknown", authToken)));
+  m_token = result["auth_token"].toString();
+  //  QString authToken = result["auth_token"].toString();
+  //  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("unknown","unknown", authToken)));
 }
 
 
@@ -33,7 +34,8 @@ QByteArray GetSessionPointRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj;
 
-  obj.insert("auth_token", m_usersContainer->at(0)->getToken());
+  //obj.insert("auth_token", m_usersContainer->at(0)->getToken());
+  obj.insert("auth_token", m_token);
 
   return serializer.serialize(obj);
 }

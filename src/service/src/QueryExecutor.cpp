@@ -64,16 +64,15 @@ qlonglong QueryExecutor::nextTimeSlotKey() const
 }
 
 
-const QString QueryExecutor::generateNewToken(const QString& login,const QString& password) const
-{
-  QString log=login+password;
-  QByteArray toHash(log.toUtf8());
-  toHash=QCryptographicHash::hash(log.toUtf8(),QCryptographicHash::Md5);
-  QString result(toHash.toHex());
-  syslog(LOG_INFO,"TOken = %s",result.toStdString().c_str());
-  return result;
-}
-
+//const QString QueryExecutor::generateNewToken(const QString& login,const QString& password) const
+//{
+//  QString log=login+password;
+//  QByteArray toHash(log.toUtf8());
+//  toHash=QCryptographicHash::hash(log.toUtf8(),QCryptographicHash::Md5);
+//  QString result(toHash.toHex());
+//  syslog(LOG_INFO,"TOken = %s",result.toStdString().c_str());
+//  return result;
+//}
 
 QSharedPointer<DataMark> QueryExecutor::insertNewTag(const QSharedPointer<DataMark>& tag)
 {
@@ -159,16 +158,17 @@ QSharedPointer<User> QueryExecutor::insertNewUser(const QSharedPointer<User>& us
   qlonglong newId = nextUserKey();
   syslog(LOG_INFO,"Generating token for new user, %s : %s",user->getLogin().toStdString().c_str()
     ,user->getPassword().toStdString().c_str());
-  QString newToken = generateNewToken(user->getLogin(),user->getPassword());
+  //QString newToken = generateNewToken(user->getLogin(),user->getPassword());
   //  syslog(LOG_INFO,"newToken = %s",newToken.toStdString().c_str());
-  newUserQuery.prepare("insert into users (id,login,password,token) values(:id,:login,:password,:a_t);");
+  // newUserQuery.prepare("insert into users (id,login,password,token) values(:id,:login,:password,:a_t);");
+  newUserQuery.prepare("insert into users (id,login,password) values(:id,:login,:password);");
   newUserQuery.bindValue(":id",newId);
   syslog(LOG_INFO,"Sending: %s",newUserQuery.lastQuery().toStdString().c_str());
   newUserQuery.bindValue(":login",user->getLogin());
   syslog(LOG_INFO,"Sending: %s",newUserQuery.lastQuery().toStdString().c_str());
   newUserQuery.bindValue(":password",user->getPassword());
-  syslog(LOG_INFO,"Sending: %s",newUserQuery.lastQuery().toStdString().c_str());
-  newUserQuery.bindValue(":a_t",newToken);
+  //  syslog(LOG_INFO,"Sending: %s",newUserQuery.lastQuery().toStdString().c_str());
+  //  newUserQuery.bindValue(":a_t",newToken);
   syslog(LOG_INFO,"Sending: %s",newUserQuery.lastQuery().toStdString().c_str());
   m_database.transaction();
   result=newUserQuery.exec();
@@ -182,7 +182,8 @@ QSharedPointer<User> QueryExecutor::insertNewUser(const QSharedPointer<User>& us
     syslog(LOG_INFO,"Commit for NewUser sql query");
     m_database.commit();
   }
-  QSharedPointer<DbUser> newUser(new DbUser(user->getLogin(),user->getPassword(),newId,newToken));
+  //QSharedPointer<DbUser> newUser(new DbUser(user->getLogin(),user->getPassword(),newId,newToken));
+  QSharedPointer<DbUser> newUser(new DbUser(user->getLogin(),user->getPassword(),newId));
   return newUser;
 }
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
@@ -31,27 +30,33 @@
  */
 
 /*! ---------------------------------------------------------------
- * \file GetSessionPointRequestJSON.h
- * \brief Header of GetSessionPointRequestJSON
+ * \file JsonSession.h
+ * \brief Header of JsonSession
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
-#define _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+#ifndef _JSONSESSION_H_32286438_e901_433e_93e3_ecb61ccc8da6_INCLUDED_
+#define _JSONSESSION_H_32286438_e901_433e_93e3_ecb61ccc8da6_INCLUDED_
 
-#include "JsonSerializer.h"
+#include "Session.h"
 
-class GetSessionPointRequestJSON: public JsonSerializer
+class JsonSession: public Session
 {
+
+  static qlonglong globalSessionId;
+  qlonglong m_id;
+
   public:
+    JsonSession(double latitude, double longitude,
+      double radius, qulonglong timeSlot, bool isCurrentTime, const QDateTime& time);
 
-    GetSessionPointRequestJSON(QObject *parent=0);
+    qlonglong getId() const;
 
-    QByteArray getJson() const;
+    void setId(qlonglong id);
 
-    void parseJson(const QByteArray&);
-};                                      //class GetSessionPointRequestJSON
-#endif                                  // _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+    virtual ~JsonSession();
+};
+#endif                                  // _JSONSESSION_H_32286438_e901_433e_93e3_ecb61ccc8da6_INCLUDED_

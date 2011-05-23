@@ -65,8 +65,8 @@ void RSSFeedRequestJSON::parseJson(const QByteArray &data)
     return;
   }
 
-  QString authToken = result["auth_token"].toString();
-  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("dummyUser[RSSFeedRequest]","dummyPassword",authToken)));
+  m_token = result["auth_token"].toString();
+
   m_latitude = result["latitude"].toDouble();
   m_longitude = result["longitude"].toDouble();
   m_radius = result["radius"].toDouble();
@@ -87,7 +87,7 @@ QByteArray RSSFeedRequestJSON::getJson() const
 
 QString RSSFeedRequestJSON::getAuthToken() const
 {
-  return m_usersContainer->at(0)->getToken();
+  return m_token;
 }
 
 

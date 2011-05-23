@@ -17,7 +17,7 @@ QByteArray SetTimeSlotMarkRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_usersContainer->at(0)->getToken());
+  request.insert("auth_token", m_token);
   request.insert("mark_id", m_tagsContainer->at(0)->getId());
   request.insert("timeSlot", m_tagsContainer->at(0)->getTimeSlot()->getSlot());
 
@@ -37,11 +37,9 @@ void SetTimeSlotMarkRequestJSON::parseJson(const QByteArray &data)
     return;
   }
 
-  QString token = result["auth_token"].toString();
+  m_token = result["auth_token"].toString();
   qlonglong markId = result["mark_id"].toLongLong();
   qulonglong timeSlot = result["timeSlot"].toULongLong();
-
-  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("unknown","unknown", token)));
 
   JsonDataMark* jsonMark = new JsonDataMark(0,0,"unknown", "unknown", "unknown", QDateTime());
   jsonMark->setId(markId);

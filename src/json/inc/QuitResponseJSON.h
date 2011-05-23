@@ -1,4 +1,3 @@
-
 /*
  * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
  *
@@ -31,27 +30,18 @@
  */
 
 /*! ---------------------------------------------------------------
- * \file GetSessionPointRequestJSON.h
- * \brief Header of GetSessionPointRequestJSON
+ * \file QuitResponseJSON.h
+ * \brief Header of QuitResponseJSON
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
-#define _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+#ifndef _QUITRESPONSEJSON_H_572e6ecf_b1b7_455b_883c_55ead04d46ef_INCLUDED_
+#define _QUITRESPONSEJSON_H_572e6ecf_b1b7_455b_883c_55ead04d46ef_INCLUDED_
 
-#include "JsonSerializer.h"
+#include "DefaultResponseJSON.h"
 
-class GetSessionPointRequestJSON: public JsonSerializer
-{
-  public:
-
-    GetSessionPointRequestJSON(QObject *parent=0);
-
-    QByteArray getJson() const;
-
-    void parseJson(const QByteArray&);
-};                                      //class GetSessionPointRequestJSON
-#endif                                  // _GETSESSIONPOINTREQUESTJSON_H_fd35fc4c_cb60_4011_97ce_e39c21212fbe_INCLUDED_
+typedef DefaultResponseJSON QuitResponseJSON;
+#endif                                  // _QUITRESPONSEJSON_H_572e6ecf_b1b7_455b_883c_55ead04d46ef_INCLUDED_
