@@ -19,9 +19,7 @@ class DbChannelAction:public ChannelAction
 
       virtual ~DbChannelAction();
 
-}
-
-
+};
 
 
 #endif // CHANNELACTIONINTERNAL_H

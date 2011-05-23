@@ -71,8 +71,7 @@ class User: public QObject
 
     void unsubscribe(const QSharedPointer<Channel>& channel);
 
-    //void setChannelAction(QSharedPointer<Channel>& channel, QSharedPointer<Action>& action);
-    //bool isAllowed(QString login, QString channel, int action);
+
 
     const QString& getLogin() const;
     const QString& getPassword() const;

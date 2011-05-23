@@ -10,7 +10,7 @@ class DbAction:public Action
     public:
       DbAction(qlonglong id,
         int mask,
-        QString &name);
+        const QString &description);
 
       qlonglong getId() const;
 
@@ -18,6 +18,6 @@ class DbAction:public Action
 
       virtual ~DbAction();
 
-}
+};
 
 #endif // ACTIONINTERNAL_H

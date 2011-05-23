@@ -6,6 +6,8 @@
 
 #include "User.h"
 #include "Channel.h"
+#include "Action.h"
+#include "ChannelAction.h"
 #include "DataMarks.h"
 
 class QueryExecutor : public QObject
@@ -26,16 +28,18 @@ class QueryExecutor : public QObject
     qlonglong nextChannelKey() const;
     qlonglong nextTagKey() const;
     qlonglong nextTimeSlotKey() const;
+    qlonglong nextActionKey() const;
     qlonglong nextChannelActionKey()const;
 
     const QString generateNewToken(const QString& login,const QString& password) const;
 
-    bool                     subscribeChannel(const QSharedPointer<User>& user,const QSharedPointer<Channel>& channel);
-    QSharedPointer<DataMark> insertNewTag(const QSharedPointer<DataMark>&);
-    QSharedPointer<User>     insertNewUser(const QSharedPointer<User>&);
-    QSharedPointer<Channel>  insertNewChannel(const QSharedPointer<Channel>&);
-    QSharedPointer<TimeSlot> insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
-    //QSharedPointer<Action>   insertNewAction(const QSharedPointer<Action>&);
+    bool                          subscribeChannel(const QSharedPointer<User>& user,const QSharedPointer<Channel>& channel);
+    QSharedPointer<DataMark>      insertNewTag(const QSharedPointer<DataMark>&);
+    QSharedPointer<User>          insertNewUser(const QSharedPointer<User>&);
+    QSharedPointer<Channel>       insertNewChannel(const QSharedPointer<Channel>&);
+    QSharedPointer<TimeSlot>      insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
+    QSharedPointer<Action>        insertNewAction(const QSharedPointer<Action>&);
+    QSharedPointer<ChannelAction> insertNewChannelAction(const QSharedPointer<ChannelAction>&);
 
     bool                     insertNewChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
     bool                     changeChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
@@ -44,8 +48,9 @@ class QueryExecutor : public QObject
     bool                     deleteChannelTimeSlot(const QSharedPointer<Channel>&);
     bool                     deleteMarkTimeSlot(const QSharedPointer<DataMark>&);
 
-    //bool                   insertNewUserChannelAction(const QSharedPointer<User>);
-    //bool                   changeUserActionChannel();
+
+    bool                     changeChannelAction(const QSharedPointer<ChannelAction>&);
+    bool                     deleteChannelAction(const QSharedPointer<ChannelAction>&);
 
     signals:
 

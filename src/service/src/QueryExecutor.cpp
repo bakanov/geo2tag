@@ -10,6 +10,8 @@
 #include "UserInternal.h"
 #include "ChannelInternal.h"
 #include "TimeSlotInternal.h"
+#include "ChannelActionInternal.h"
+#include "ActionInternal.h"
 
 QueryExecutor::QueryExecutor(const QSqlDatabase &db, QObject *parent): QObject(parent),
 m_database(db)
@@ -61,6 +63,16 @@ qlonglong QueryExecutor::nextChannelKey() const
 qlonglong QueryExecutor::nextTimeSlotKey() const
 {
   return nextKey("timeSlots_seq");
+}
+
+qlonglong QueryExecutor::nextChannelActionKey() const
+{
+  return nextKey("channel_actions_seq");
+}
+
+qlonglong QueryExecutor::nextActionKey() const
+{
+  return nextKey("actions_seq");
 }
 
 
@@ -238,6 +250,63 @@ QSharedPointer<TimeSlot> QueryExecutor::insertNewTimeSlot(const QSharedPointer<T
   return newTimeSlot;
 }
 
+QSharedPointer<Action>   QueryExecutor:: insertNewAction(const QSharedPointer<Action> &action)
+{
+    bool result;
+    QSqlQuery newActionQuery(m_database);
+    qlonglong newId = nextActionKey();
+    syslog(LOG_INFO,"NewId ready, now preparing sql query for adding new id, mask, description");
+    newActionQuery.prepare("insert into action (id,mask,description) values(:id,:mask,:description);");
+    newActionQuery.bindValue(":id",newId);
+    newActionQuery.bindValue(":mask",action->getMask());
+    newActionQuery.bindValue(":description",action->getDescription());
+
+    m_database.transaction();
+    result=newActionQuery.exec();
+    if(!result)
+    {
+      syslog(LOG_INFO,"Rollback for NewAction sql query");
+      m_database.rollback();
+      return QSharedPointer<Action>(NULL);
+    } else
+    {
+      syslog(LOG_INFO,"Commit for NewAction sql query");
+      m_database.commit();
+    }
+    QSharedPointer<DbAction> newAction(new DbAction(newId, action->getMask(), action->getDescription()));
+    return newAction;
+
+
+}
+QSharedPointer<ChannelAction> QueryExecutor::insertNewChannelAction(const QSharedPointer<ChannelAction>& channelAction)
+{
+    bool result;
+    QSqlQuery newChannelActionQuery(m_database);
+    qlonglong newId = nextChannelActionKey();
+    syslog(LOG_INFO,"NewId ready, now preparing sql query for adding new user, channel and action");
+    newChannelActionQuery.prepare("insert into channel_action (id,user_id,channel_id,action) values(:id,:user_id,:channel_id,:action);");
+    newChannelActionQuery.bindValue(":id",newId);
+    newChannelActionQuery.bindValue(":user_id",channelAction->getUser());
+    newChannelActionQuery.bindValue(":channel_id",channelAction->getChannel());
+    newChannelActionQuery.bindValue(":action",channelAction->getAction());
+
+    m_database.transaction();
+    result=newChannelActionQuery.exec();
+    if(!result)
+    {
+      syslog(LOG_INFO,"Rollback for NewChannelAction sql query");
+      m_database.rollback();
+      return QSharedPointer<ChannelAction>(NULL);
+    } else
+    {
+      syslog(LOG_INFO,"Commit for NewChannelAction sql query");
+      m_database.commit();
+    }
+    QSharedPointer<DbChannelAction> newChannelAction(new DbChannelAction(newId, channelAction->getUser(), channelAction->getChannel(), channelAction->getAction()));
+    return newChannelAction;
+
+}
+
 
 bool QueryExecutor::insertNewChannelTimeSlot(const QSharedPointer<Channel>& channel, const QSharedPointer<TimeSlot>& timeSlot)
 {
@@ -391,5 +460,58 @@ bool QueryExecutor::deleteMarkTimeSlot(const QSharedPointer<DataMark>& tag)
   }
   return result;
 }
-//insertNewUserAccess
-//changeUserAccess
+
+bool QueryExecutor::changeChannelAction(const QSharedPointer<ChannelAction> &channelAction)
+{
+    bool result;
+    QSqlQuery changeChannelAction(m_database);
+    changeChannelAction.prepare("update channel_action set action = :action where user_id = :user_id and channel_id = :channel_id;");
+    changeChannelAction.bindValue(":action",channelAction->getAction());
+    changeChannelAction.bindValue(":user_id",channelAction->getUser());
+    changeChannelAction.bindValue(":channel_id",channelAction->getChannel());
+
+    syslog(LOG_INFO, "Set action %lld for user (Id = %lld) and channel (Id = %lld)", channelAction->getAction(), channelAction->getUser(), channelAction->getChannel());
+
+    m_database.transaction();
+    result=changeChannelAction.exec();
+    if(!result)
+    {
+      syslog(LOG_INFO,"Rollback for changeChannelAction sql query");
+      m_database.rollback();
+    }else
+    {
+      syslog(LOG_INFO,"Commit for changeChannelAction sql query");
+      m_database.commit();
+    }
+    return result;
+
+
+}
+
+bool  QueryExecutor::deleteChannelAction(const QSharedPointer<ChannelAction> &channelAction)
+{
+    bool result;
+    QSqlQuery deleteChannelAction(m_database);
+    deleteChannelAction.prepare("delete from channel_action where user_id = :user_id and channel_id = :channel_id and action = :action ;");
+    deleteChannelAction.bindValue(":user_id",channelAction->getUser());
+    deleteChannelAction.bindValue(":channel_id",channelAction->getChannel());
+    deleteChannelAction.bindValue(":action",channelAction->getAction());
+
+    syslog(LOG_INFO,"Deleting user (Id = %lld), channel (Id = %lld) and action %lld)", channelAction->getUser(), channelAction->getChannel(), channelAction->getAction());
+
+    m_database.transaction();
+    result=deleteChannelAction.exec();
+    if(!result)
+    {
+      syslog(LOG_INFO,"Rollback for deleteChannelAction sql query");
+      m_database.rollback();
+    }
+    else
+    {
+      syslog(LOG_INFO,"Commit for deleteChannelAction sql query");
+      m_database.commit();
+    }
+    return result;
+
+}
+

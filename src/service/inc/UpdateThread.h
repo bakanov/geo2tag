@@ -18,13 +18,13 @@ class UpdateThread: public QThread
 {
   Q_OBJECT
 
-    QSharedPointer<Channels>     m_channelsContainer;
-  QSharedPointer<DataMarks>      m_tagsContainer;
-  QSharedPointer<Users>          m_usersContainer;
-  QSharedPointer<TimeSlots>      m_timeSlotsContainer;
-  QSharedPointer<DataChannels>   m_dataChannelsMap;
-  QSharedPointer<Actions>        m_actionsContainer;
-  QSharedPointer<ChannelActions> m_channelActionsContainer;
+    QSharedPointer<Channels>       m_channelsContainer;
+    QSharedPointer<DataMarks>      m_tagsContainer;
+    QSharedPointer<Users>          m_usersContainer;
+    QSharedPointer<TimeSlots>      m_timeSlotsContainer;
+    QSharedPointer<DataChannels>   m_dataChannelsMap;
+    QSharedPointer<Actions>        m_actionsContainer;
+    QSharedPointer<ChannelActions> m_channelActionsContainer;
 
   QSqlDatabase m_database;
 

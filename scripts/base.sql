@@ -83,9 +83,9 @@ CREATE SEQUENCE actions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 CREATE TABLE action (
 id NUMERIC(9,0) NOT NULL DEFAULT nextval('actions_seq'),
 mask SERIAL NOT NULL,
-name VARCHAR(300) NOT NULL,
+description VARCHAR(300) NOT NULL,
 CONSTRAINT id_pk PRIMARY KEY(id),
-unique (mask, name)
+unique (mask, description)
 );
 
 CREATE SEQUENCE channel_actions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
@@ -118,12 +118,12 @@ INSERT into channel_action (user_id, channel_id, action) values (5, 3, 3);
 INSERT into channel_action (user_id, channel_id, action) values (2, 5, 5);
 INSERT into channel_action (user_id, channel_id, action) values (3, 4, 3);
 
-INSERT into action (mask, name) values (1,  'subscribe');
-INSERT into action (mask, name) values (2,  'unsubscribe');
-INSERT into action (mask, name) values (4,  'write');
-INSERT into action (mask, name) values (8,  'read');
-INSERT into action (mask, name) values (16, 'create');
-INSERT into action (mask, name) values (32, 'remove');
+INSERT into action (mask, description) values (1,  'subscribe');
+INSERT into action (mask, description) values (2,  'unsubscribe');
+INSERT into action (mask, description) values (4,  'write');
+INSERT into action (mask, description) values (8,  'read');
+INSERT into action (mask, description) values (16, 'create');
+INSERT into action (mask, description) values (32, 'remove');
 
 INSERT into tag_action (user_id, tag_id, action) values (1, 1, 3);
 INSERT into tag_action (user_id, tag_id, action) values (2, 1, 3);

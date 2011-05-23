@@ -1,8 +1,8 @@
 #include "Action.h"
 
-Action::Action(int mask, const QString & action):
+Action::Action(int mask, const QString & description):
         m_mask(mask),
-        m_action(action)
+        m_description(description)
 {
 }
 
@@ -17,19 +17,19 @@ int Action::getMask()const
     return m_mask;
 }
 
-/*void Action::setMask(int mask)
+void Action::setMask(int mask)
 {
-    m_mask(mask);
-}*/
+    m_mask = mask;
+}
 
-/*void Action::setAction(const QString & action)
+void Action::setDescription(const QString & description)
 {
-    m_action(action);
-}*/
+    m_description = description;
+}
 
-const QString& Action::getAction()const
+const QString& Action::getDescription()const
 {
-    return m_action;
+    return m_description;
 }
 
 Action::~Action()

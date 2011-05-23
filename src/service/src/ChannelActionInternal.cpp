@@ -15,7 +15,7 @@ qlonglong DbChannelAction::getId() const
 
 void DbChannelAction::setId(qlonglong id)
 {
-    m_id(id);
+    m_id = id;
 }
 
 virtual DbChannelAction::~DbChannelAction();

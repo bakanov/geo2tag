@@ -2,8 +2,8 @@
 
 DbAction::DbAction(qlonglong id,
   int mask,
-  QString &name):
-Action(mask, name), m_id(id)
+  QString &description):
+Action(mask, description), m_id(id)
 {
 }
 
@@ -14,7 +14,7 @@ qlonglong DbAction::getId() const
 
 void DbAction::setId(qlonglong id)
 {
-    m_id(id);
+    m_id = id;
 }
 
 virtual DbAction::~DbAction()

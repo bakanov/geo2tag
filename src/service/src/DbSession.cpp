@@ -98,7 +98,8 @@ namespace common
     m_usersContainer(new Users()),
     m_timeSlotsContainer(new TimeSlots()),
     m_dataChannelsMap(new DataChannels()),
-    m_channelActionMap(new ChannelActions()),//!!--
+    m_channelActionsContainer(new ChannelActions()),
+    m_actionsContainer(new Actions()),
     m_updateThread(NULL),
     m_queryExecutor(NULL)
   {
@@ -130,8 +131,8 @@ namespace common
       m_channelsContainer,
       m_timeSlotsContainer,
       m_dataChannelsMap,
-      //m_action
-      //m_channelAction
+      m_channelActionsContainer,
+      m_actionsContainer,
       NULL);
 
     m_updateThread->start();

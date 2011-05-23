@@ -205,7 +205,7 @@ void UpdateThread::loadTags(DataMarks &container)
 void UpdateThread::loadActions(Actions & container)
 {
     QSqlQuery query(m_database);
-    query.exec("select id, mask, name from action;");
+    query.exec("select id, mask, description from action;");
     while (query.next())
     {
       qlonglong id = query.record().value("id").toLongLong();
@@ -215,14 +215,14 @@ void UpdateThread::loadActions(Actions & container)
         continue;
       }
       int mask = query.record().value("mask").toInt();
-      QString name = query.record().value("name").toString();
-      DbAction *newAction = new DbAction(id,mask,name);
+      QString description = query.record().value("description").toString();
+      DbAction *newAction = new DbAction(id,mask,description);
       QSharedPointer<DbAction> pointer(newAction);
       container.push_back(pointer);
     }
 }
 
-void UpdateThread::loadChannelActions(ChannelActions &container)
+void UpdateThread::loadChannelActions(ChannelActions & container)
 {
     QSqlQuery query(m_database);
     query.exec("select id, user_id, channel_id, action from channel_action;");
@@ -234,16 +234,17 @@ void UpdateThread::loadChannelActions(ChannelActions &container)
         // skip record
         continue;
       }
-      int mask = query.record().value("mask").toInt();
-      QString name = query.record().value("name").toString();
-      DbAction *newAction = new DbAction(id,mask,name);
-      QSharedPointer<DbAction> pointer(newAction);
+      qlonglong user = query.record().value("user_id").toLongLong();
+      qlonglong channel = query.record().value("channel_id").toLongLong();
+      int action = query.record().value("action").toInt();
+      DbChannelAction *newChannelAction = new DbChannelAction(id, user, channel, action);
+      QSharedPointer<DbChannelAction> pointer(newChannelAction);
       container.push_back(pointer);
     }
 
 }
 
-void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &channels, TimeSlots & timeSlots)
+void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &channels, TimeSlots & timeSlots, ChannelActions & channelActions)
 {
   {
     QSqlQuery query(m_database);
@@ -325,13 +326,11 @@ void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &ch
     query.exec("select user_id, channel_id, action from channel_action;");
     while (query.next())
     {
-        qlonglong user_id = query.record().value("user_id").toLongLong();
-        qlonglong channel_id = query.record().value("channel_id").toLongLong();
+        qlonglong user = query.record().value("user_id").toLongLong();
+        qlonglong channel = query.record().value("channel_id").toLongLong();
         int action = query.record().value("action").toInt();
 
-        QSharedPointer<User> user = users.item(user_id);
-        QSharedPointer<Channel> channel = channels.item(channel_id);
-        user->setChannelAction(channel,action);
+        channelActions.push_back(user,channel,action);
     }
     }
 

@@ -19,13 +19,13 @@ public:
 
     virtual qlonglong getId() const;
 
-    //void setUser(qlonglong user);
+    void setUser(qlonglong user);
     qlonglong getUser()const;
 
-    //void setChannel(qlonglong channel);
+    void setChannel(qlonglong channel);
     qlonglong getChannel()const;
 
-    //void setAction(int action);
+    void setAction(int action);
     int getAction()const;
 
     virtual ~ChannelAction();

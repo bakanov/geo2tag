@@ -53,6 +53,7 @@
 #include "User.h"
 #include "TimeSlot.h"
 #include "ChannelAction.h"
+#include "Action.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 
@@ -64,12 +65,13 @@ namespace common
   class DbObjectsCollection
   {
 
-    QSharedPointer<Channels>     m_channelsContainer;
-    QSharedPointer<DataMarks>    m_tagsContainer;
-    QSharedPointer<Users>        m_usersContainer;
-    QSharedPointer<TimeSlots>    m_timeSlotsContainer;
-    QSharedPointer<DataChannels> m_dataChannelsMap;
-    //QSharedPointer<ChannelActions>m_channelActionMap;
+    QSharedPointer<Channels>      m_channelsContainer;
+    QSharedPointer<DataMarks>     m_tagsContainer;
+    QSharedPointer<Users>         m_usersContainer;
+    QSharedPointer<TimeSlots>     m_timeSlotsContainer;
+    QSharedPointer<DataChannels>  m_dataChannelsMap;
+    QSharedPointer<ChannelActions>m_channelActionsContainer;
+    QSharedPointer<Actions>       m_actionsContainer;
 
     UpdateThread *              m_updateThread;
 
@@ -99,6 +101,8 @@ namespace common
     QByteArray processSetTimeSlotMarkQuery(const QByteArray&);
     QByteArray processSetDefaultTimeSlotQuery(const QByteArray&);
     QByteArray processSetDefaultTimeSlotMarkQuery(const QByteArray&);
+    //QByteArray processSetUserChannelActionQuery(const QByteArray&);
+    //QByteArray processNewUserChannelActionQuery(const QByteArray&);
 
     public:
 
