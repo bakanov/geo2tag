@@ -3,335 +3,340 @@
 #include "UpdateThread.h"
 
 UpdateThread::UpdateThread(const QSqlDatabase &db,
-const QSharedPointer<DataMarks> &tags,
-const QSharedPointer<Users> &users,
-const QSharedPointer<Channels> &channels,
-const QSharedPointer<TimeSlots> &timeSlots,
-const QSharedPointer<DataChannels>& dataChannelsMap,
-const QSharedPointer<Actions>& actions,
-const QSharedPointer<ChannelActions>& channelActions,
-QObject *parent):
-QThread(parent),
-m_channelsContainer(channels),
-m_tagsContainer(tags),
-m_usersContainer(users),
-m_timeSlotsContainer(timeSlots),
-m_dataChannelsMap(dataChannelsMap),
-m_actionsContainer(actions),
-m_channelActionsContainer(channelActions),
-m_database(db)
+                           const QSharedPointer<DataMarks> &tags,
+                           const QSharedPointer<Users> &users,
+                           const QSharedPointer<Channels> &channels,
+                           const QSharedPointer<TimeSlots> &timeSlots,
+                           const QSharedPointer<DataChannels>& dataChannelsMap,
+                           const QSharedPointer<Actions>& actions,
+                           const QSharedPointer<ChannelActions>& channelActions,
+                           QObject *parent):
+    QThread(parent),
+    m_channelsContainer(channels),
+    m_tagsContainer(tags),
+    m_usersContainer(users),
+    m_timeSlotsContainer(timeSlots),
+    m_dataChannelsMap(dataChannelsMap),
+    m_actionsContainer(actions),
+    m_channelActionsContainer(channelActions),
+    m_database(db)
 {
 }
 
 
 void UpdateThread::lockWriting()
 {
-  m_updateLock.lockForWrite();
+    m_updateLock.lockForWrite();
 }
 
 
 void UpdateThread::unlockWriting()
 {
-  m_updateLock.unlock();
+    m_updateLock.unlock();
 }
 
 
 void UpdateThread::run()
 {
-  for(;;)
-  {
-    syslog(LOG_INFO, "trying to connect to database..., file: %s, line: %d", __FILE__, __LINE__);
-    bool result = m_database.open();
-    if(!result)
+    for(;;)
     {
-      syslog(LOG_INFO, "connection error %s",m_database.lastError().text().toStdString().c_str());
-      QThread::msleep(1000);
-      continue;
+        syslog(LOG_INFO, "trying to connect to database..., file: %s, line: %d", __FILE__, __LINE__);
+        bool result = m_database.open();
+        if(!result)
+        {
+            syslog(LOG_INFO, "connection error %s",m_database.lastError().text().toStdString().c_str());
+            QThread::msleep(1000);
+            continue;
+        }
+        qDebug() << "connected...";
+        Users           usersContainer(*m_usersContainer);
+        DataMarks       tagsContainer(*m_tagsContainer);
+        Channels        channelsContainer(*m_channelsContainer);
+        TimeSlots       timeSlotsContainer(*m_timeSlotsContainer);
+        Actions         actionsContainer(*m_actionsContainer);
+        ChannelActions  channelActionsContainer(*m_channelActionsContainer);
+
+        loadUsers(usersContainer);
+        loadTags(tagsContainer);
+        loadChannels(channelsContainer);
+        loadTimeSlots(timeSlotsContainer);
+        loadActions(actionsContainer);
+        loadChannelActions(channelActionsContainer);
+
+        lockWriting();
+        m_usersContainer->merge(usersContainer);
+        m_tagsContainer->merge(tagsContainer);
+        m_channelsContainer->merge(channelsContainer);
+        m_timeSlotsContainer->merge(timeSlotsContainer);
+        m_actionsContainer->merge(actionsContainer);
+        m_channelActionsContainer->merge(channelActionsContainer);
+
+        updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer, *m_channelActionsContainer);
+
+        for(int i=0; i<m_tagsContainer->size(); i++)
+        {
+            QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
+            QSharedPointer<Channel> channel = tag->getChannel();
+            if(!m_dataChannelsMap->contains(channel, tag))
+            {
+                // syslog(LOG_INFO, "adding %d from %d tag %s to channel %s", i, m_tagsContainer->size(),
+                // tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz").toStdString().c_str(), channel->getName().toStdString().c_str());
+
+                m_dataChannelsMap->insert(channel, tag);
+            }
+        }
+        syslog(LOG_INFO, "tags added. trying to unlock");
+        unlockWriting();
+
+        syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
+        syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
+        syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
+        m_database.close();
+        QThread::msleep(10000);
     }
-    qDebug() << "connected...";
-    Users           usersContainer(*m_usersContainer);
-    DataMarks       tagsContainer(*m_tagsContainer);
-    Channels        channelsContainer(*m_channelsContainer);
-    TimeSlots       timeSlotsContainer(*m_timeSlotsContainer);
-    Actions         actionsContainer(*m_actionsContainer);
-    ChannelActions  channelActionsContainer(*m_channelActionsContainer);
-
-    loadUsers(usersContainer);
-    loadTags(tagsContainer);
-    loadChannels(channelsContainer);
-    loadTimeSlots(timeSlotsContainer);
-    loadActions(actionsContainer);
-    loadChannelActions(channelActionsContainer);
-
-    lockWriting();
-    m_usersContainer->merge(usersContainer);
-    m_tagsContainer->merge(tagsContainer);
-    m_channelsContainer->merge(channelsContainer);
-    m_timeSlotsContainer->merge(timeSlotsContainer);
-    m_actionsContainer->merge(actionsContainer);
-    m_channelActionsContainer->merge(channelActionsContainer);
-
-    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer, *m_channelActionsContainer);
-
-    for(int i=0; i<m_tagsContainer->size(); i++)
-    {
-      QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
-      QSharedPointer<Channel> channel = tag->getChannel();
-      if(!m_dataChannelsMap->contains(channel, tag))
-      {
-        // syslog(LOG_INFO, "adding %d from %d tag %s to channel %s", i, m_tagsContainer->size(),
-        // tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz").toStdString().c_str(), channel->getName().toStdString().c_str());
-
-        m_dataChannelsMap->insert(channel, tag);
-      }
-    }
-    syslog(LOG_INFO, "tags added. trying to unlock");
-    unlockWriting();
-
-    syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
-    syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
-    syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
-    m_database.close();
-    QThread::msleep(10000);
-  }
 }
 
 
 void UpdateThread::loadUsers(Users &container)
 {
-  QSqlQuery query(m_database);
-  query.exec("select id, login, password, token from users order by id;");
-  while (query.next())
-  {
-    qlonglong id = query.record().value("id").toLongLong();
-    if(container.exist(id))
+    QSqlQuery query(m_database);
+    query.exec("select id, login, password, token from users order by id;");
+    while (query.next())
     {
-      // skip record
-      continue;
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+        QString login = query.record().value("login").toString();
+        QString password = query.record().value("password").toString();
+        QString token = query.record().value("token").toString();
+        syslog(LOG_INFO,"Pushing | %lld | %s | %s ",id,login.toStdString().c_str(),token.toStdString().c_str());
+        DbUser *newUser = new DbUser(login,password,id,token);
+        QSharedPointer<DbUser> pointer(newUser);
+        container.push_back(pointer);
     }
-    QString login = query.record().value("login").toString();
-    QString password = query.record().value("password").toString();
-    QString token = query.record().value("token").toString();
-    syslog(LOG_INFO,"Pushing | %lld | %s | %s ",id,login.toStdString().c_str(),token.toStdString().c_str());
-    DbUser *newUser = new DbUser(login,password,id,token);
-    QSharedPointer<DbUser> pointer(newUser);
-    container.push_back(pointer);
-  }
 }
 
 
 void UpdateThread::loadChannels(Channels &container)
 {
-  QSqlQuery query(m_database);
-  query.exec("select id, description, name, url from channel order by id;");
-  while (query.next())
-  {
-    qlonglong id = query.record().value("id").toLongLong();
-    if(container.exist(id))
+    QSqlQuery query(m_database);
+    query.exec("select id, description, name, url from channel order by id;");
+    while (query.next())
     {
-      // skip record
-      continue;
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        DbChannel *newChannel = new DbChannel(id,name,description,url);
+        QSharedPointer<DbChannel> pointer(newChannel);
+        container.push_back(pointer);
     }
-    QString name = query.record().value("name").toString();
-    QString description = query.record().value("description").toString();
-    QString url = query.record().value("url").toString();
-    DbChannel *newChannel = new DbChannel(id,name,description,url);
-    QSharedPointer<DbChannel> pointer(newChannel);
-    container.push_back(pointer);
-  }
 }
 
 
 void UpdateThread::loadTimeSlots(TimeSlots &container)
 {
-  QSqlQuery query(m_database);
-  query.exec("select id, slot from timeSlot order by id;");
-  while (query.next())
-  {
-    qlonglong id = query.record().value("id").toLongLong();
-    if(container.exist(id))
+    QSqlQuery query(m_database);
+    query.exec("select id, slot from timeSlot order by id;");
+    while (query.next())
     {
-      // skip record
-      continue;
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+
+        qulonglong slot = query.record().value("slot").toULongLong();
+        if (slot == 0)
+            syslog(LOG_INFO, "can't convert to qulonglong");
+
+        syslog(LOG_INFO, "slot: %llu milliseconds", slot);
+
+        DbTimeSlot * newTimeSlot = new DbTimeSlot(id, slot);
+        QSharedPointer<DbTimeSlot> pointer(newTimeSlot);
+        container.push_back(pointer);
     }
-
-    qulonglong slot = query.record().value("slot").toULongLong();
-    if (slot == 0)
-      syslog(LOG_INFO, "can't convert to qulonglong");
-
-    syslog(LOG_INFO, "slot: %llu milliseconds", slot);
-
-    DbTimeSlot * newTimeSlot = new DbTimeSlot(id, slot);
-    QSharedPointer<DbTimeSlot> pointer(newTimeSlot);
-    container.push_back(pointer);
-  }
 }
 
 
 void UpdateThread::loadTags(DataMarks &container)
 {
-  QSqlQuery query(m_database);
-  query.exec("select id, time, latitude, longitude, label, description, url, user_id from tag order by time;");
-  while (query.next())
-  {
-    qlonglong id = query.record().value("id").toLongLong();
-    if(container.exist(id))
+    QSqlQuery query(m_database);
+    query.exec("select id, time, latitude, longitude, label, description, url, user_id from tag order by time;");
+    while (query.next())
     {
-      // skip record
-      continue;
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+        QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
+        //       // syslog(LOG_INFO, "loaded tag with time: %s milliseconds", time;
+        qreal latitude = query.record().value("latitude").toReal();
+        qreal longitude = query.record().value("longitude").toReal();
+        QString label = query.record().value("label").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        qlonglong userId = query.record().value("user_id").toLongLong();
+
+        DbDataMark *newMark = new DbDataMark(id,
+                                             latitude,
+                                             longitude,
+                                             label,
+                                             description,
+                                             url,
+                                             time,
+                                             userId);
+        QSharedPointer<DbDataMark> pointer(newMark);
+        container.push_back(pointer);
     }
-    QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
-    //       // syslog(LOG_INFO, "loaded tag with time: %s milliseconds", time;
-    qreal latitude = query.record().value("latitude").toReal();
-    qreal longitude = query.record().value("longitude").toReal();
-    QString label = query.record().value("label").toString();
-    QString description = query.record().value("description").toString();
-    QString url = query.record().value("url").toString();
-    qlonglong userId = query.record().value("user_id").toLongLong();
-
-    DbDataMark *newMark = new DbDataMark(id,
-      latitude,
-      longitude,
-      label,
-      description,
-      url,
-      time,
-      userId);
-    QSharedPointer<DbDataMark> pointer(newMark);
-    container.push_back(pointer);
-  }
 }
-
-void UpdateThread::loadActions(Actions & container)
+void UpdateThread::loadActions(Actions & /*container*/)
 {
+#if 0
     QSqlQuery query(m_database);
     query.exec("select id, mask, description from action;");
     while (query.next())
     {
-      qlonglong id = query.record().value("id").toLongLong();
-      if(container.exist(id))
-      {
-        // skip record
-        continue;
-      }
-      int mask = query.record().value("mask").toInt();
-      QString description = query.record().value("description").toString();
-      DbAction *newAction = new DbAction(id,mask,description);
-      QSharedPointer<DbAction> pointer(newAction);
-      container.push_back(pointer);
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+        int mask = query.record().value("mask").toInt();
+        QString description = query.record().value("description").toString();
+        DbAction *newAction = new DbAction(id,mask,description);
+        QSharedPointer<DbAction> pointer(newAction);
+        container.push_back(pointer);
     }
+#endif
 }
 
-void UpdateThread::loadChannelActions(ChannelActions & container)
+void UpdateThread::loadChannelActions(ChannelActions & /*container*/)
 {
+#if 0
     QSqlQuery query(m_database);
     query.exec("select id, user_id, channel_id, action from channel_action;");
     while (query.next())
     {
-      qlonglong id = query.record().value("id").toLongLong();
-      if(container.exist(id))
-      {
-        // skip record
-        continue;
-      }
-      qlonglong user = query.record().value("user_id").toLongLong();
-      qlonglong channel = query.record().value("channel_id").toLongLong();
-      int action = query.record().value("action").toInt();
-      DbChannelAction *newChannelAction = new DbChannelAction(id, user, channel, action);
-      QSharedPointer<DbChannelAction> pointer(newChannelAction);
-      container.push_back(pointer);
+        qlonglong id = query.record().value("id").toLongLong();
+        if(container.exist(id))
+        {
+            // skip record
+            continue;
+        }
+        qlonglong user = query.record().value("user_id").toLongLong();
+        qlonglong channel = query.record().value("channel_id").toLongLong();
+        int action = query.record().value("action").toInt();
+        DbChannelAction *newChannelAction = new DbChannelAction(id, user, channel, action);
+        QSharedPointer<DbChannelAction> pointer(newChannelAction);
+        container.push_back(pointer);
     }
-
+#endif
 }
 
 void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &channels, TimeSlots & timeSlots, ChannelActions & channelActions)
 {
-  {
-    QSqlQuery query(m_database);
-    query.exec("select user_id, channel_id from subscribe;");
-    while (query.next())
     {
-      qlonglong user_id = query.record().value("user_id").toLongLong();
-      qlonglong channel_id = query.record().value("channel_id").toLongLong();
-      users.item(user_id)->subscribe(channels.item(channel_id));
+        QSqlQuery query(m_database);
+        query.exec("select user_id, channel_id from subscribe;");
+        while (query.next())
+        {
+            qlonglong user_id = query.record().value("user_id").toLongLong();
+            qlonglong channel_id = query.record().value("channel_id").toLongLong();
+            users.item(user_id)->subscribe(channels.item(channel_id));
+        }
     }
-  }
-  {
-    QSqlQuery query(m_database);
-    query.exec("select tag_id, channel_id from tags;");
-    while (query.next())
     {
-      qlonglong tag_id = query.record().value("tag_id").toLongLong();
-      qlonglong channel_id = query.record().value("channel_id").toLongLong();
+        QSqlQuery query(m_database);
+        query.exec("select tag_id, channel_id from tags;");
+        while (query.next())
+        {
+            qlonglong tag_id = query.record().value("tag_id").toLongLong();
+            qlonglong channel_id = query.record().value("channel_id").toLongLong();
 
-      QSharedPointer<Channel> channel = channels.item(channel_id);
-      QSharedPointer<DataMark> tag = tags.item(tag_id);
+            QSharedPointer<Channel> channel = channels.item(channel_id);
+            QSharedPointer<DataMark> tag = tags.item(tag_id);
 
-      tag->setChannel(channel);
+            tag->setChannel(channel);
+        }
     }
-  }
 
-  for(int i=0; i<tags.size(); i++)
-  {
-    tags[i]->setUser(users.item(tags.at(i).dynamicCast<DbDataMark>()->getUserId()));
-  }
-
-  {
-    QSqlQuery query(m_database);
-    query.exec("select channel_id, timeslot_id from channeltimeslot;");
-    while (query.next())
+    for(int i=0; i<tags.size(); i++)
     {
-      qlonglong timeslot_id = query.record().value("timeslot_id").toLongLong();
-      qlonglong channel_id = query.record().value("channel_id").toLongLong();
-
-      QSharedPointer<Channel> channel = channels.item(channel_id);
-      QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
-
-      channel->setTimeSlot(timeslot);
-      channel->setDefaultTimeSlot(false);
+        tags[i]->setUser(users.item(tags.at(i).dynamicCast<DbDataMark>()->getUserId()));
     }
-  }
 
-  {
-    QSqlQuery query(m_database);
-    query.exec("select tag_id, timeslot_id from tagtimeslot;");
-    while (query.next())
     {
-      qulonglong timeslot_id = query.record().value("timeslot_id").toULongLong();
-      qlonglong tag_id = query.record().value("tag_id").toLongLong();
+        QSqlQuery query(m_database);
+        query.exec("select channel_id, timeslot_id from channeltimeslot;");
+        while (query.next())
+        {
+            qlonglong timeslot_id = query.record().value("timeslot_id").toLongLong();
+            qlonglong channel_id = query.record().value("channel_id").toLongLong();
 
-      QSharedPointer<DataMark> tag = tags.item(tag_id);
-      QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
+            QSharedPointer<Channel> channel = channels.item(channel_id);
+            QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
 
-      tag->setTimeSlot(timeslot);
+            channel->setTimeSlot(timeslot);
+            channel->setDefaultTimeSlot(false);
+        }
     }
-  }
 
-  {
-    QSqlQuery query(m_database);
-    query.exec("select tag_id, timeslot_id from tagtimeslot;");
-    while (query.next())
     {
-      qulonglong timeslot_id = query.record().value("timeslot_id").toULongLong();
-      qlonglong tag_id = query.record().value("tag_id").toLongLong();
+        QSqlQuery query(m_database);
+        query.exec("select tag_id, timeslot_id from tagtimeslot;");
+        while (query.next())
+        {
+            qulonglong timeslot_id = query.record().value("timeslot_id").toULongLong();
+            qlonglong tag_id = query.record().value("tag_id").toLongLong();
 
-      QSharedPointer<DataMark> tag = tags.item(tag_id);
-      QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
+            QSharedPointer<DataMark> tag = tags.item(tag_id);
+            QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
 
-      tag->setTimeSlot(timeslot);
+            tag->setTimeSlot(timeslot);
+        }
     }
-  }
-  {
-    QSqlQuery query(m_database);
-    query.exec("select user_id, channel_id, action from channel_action;");
-    while (query.next())
+
     {
-        qlonglong user = query.record().value("user_id").toLongLong();
-        qlonglong channel = query.record().value("channel_id").toLongLong();
-        int action = query.record().value("action").toInt();
+        QSqlQuery query(m_database);
+        query.exec("select tag_id, timeslot_id from tagtimeslot;");
+        while (query.next())
+        {
+            qulonglong timeslot_id = query.record().value("timeslot_id").toULongLong();
+            qlonglong tag_id = query.record().value("tag_id").toLongLong();
 
-        channelActions.push_back(user,channel,action);
-    }
-    }
+            QSharedPointer<DataMark> tag = tags.item(tag_id);
+            QSharedPointer<TimeSlot> timeslot = timeSlots.item(timeslot_id);
 
+            tag->setTimeSlot(timeslot);
+        }
+    }
+    {
+        QSqlQuery query(m_database);
+
+        query.exec("select user_id, channel_id, action from channel_action;");
+
+
+        while (query.next())
+        {
+            qlonglong user = query.record().value("user_id").toLongLong();
+            qlonglong channel = query.record().value("channel_id").toLongLong();
+            int action = query.record().value("action").toInt();
+
+            channelActions.at(ChannelPrivileges::DEFAULT_PRIVILEGES)->setPrivileges(user,channel,action);
+
+        }
+    }
 }

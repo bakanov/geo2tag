@@ -4,7 +4,8 @@
 
 #include "ChannelAction.h"
 
-class DbChannelAction:public ChannelAction
+#if 0
+class DbChannelAction : public ChannelActions
 {
     qlonglong m_id;
 
@@ -21,5 +22,5 @@ class DbChannelAction:public ChannelAction
 
 };
 
-
+#endif
 #endif // CHANNELACTIONINTERNAL_H

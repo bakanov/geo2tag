@@ -1,5 +1,6 @@
 #include "ChannelActionInternal.h"
 
+#if 0
 DbChannelAction(qlonglong id,
   qlonglong user_id, qlonglong channel_id,
   int action):
@@ -19,3 +20,4 @@ void DbChannelAction::setId(qlonglong id)
 }
 
 virtual DbChannelAction::~DbChannelAction();
+#endif

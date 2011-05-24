@@ -6,33 +6,23 @@
 #include "ConcurrentVector.h"
 
 
-class ChannelAction: public QObject
+class ChannelPrivileges: public QObject
 {
     Q_OBJECT
 
-    qlonglong m_user;
-    qlonglong m_channel;
-    int m_action;
+    QMap<QPair<qlonglong,qlonglong>,int> m_data;
 
 public:
-    ChannelAction(qlonglong user, qlonglong channel, int action);
+    static const qlonglong DEFAULT_PRIVILEGES = 0;
 
     virtual qlonglong getId() const;
 
-    void setUser(qlonglong user);
+    void setPrivileges(qlonglong user, qlonglong channel, int actions);
+    bool isAllowed(qlonglong user, qlonglong channel, int actions);
     qlonglong getUser()const;
-
-    void setChannel(qlonglong channel);
-    qlonglong getChannel()const;
-
-    void setAction(int action);
-    int getAction()const;
-
-    virtual ~ChannelAction();
-
-
 };
-typedef ConcurrentVector<QMap<QPair<qlonglong,qlonglong>,int> > ChannelActions;
+
+typedef ConcurrentVector<ChannelPrivileges> ChannelActions;
 
 
 

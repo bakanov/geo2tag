@@ -39,7 +39,7 @@ class QueryExecutor : public QObject
     QSharedPointer<Channel>       insertNewChannel(const QSharedPointer<Channel>&);
     QSharedPointer<TimeSlot>      insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
     QSharedPointer<Action>        insertNewAction(const QSharedPointer<Action>&);
-    QSharedPointer<ChannelAction> insertNewChannelAction(const QSharedPointer<ChannelAction>&);
+    QSharedPointer<ChannelActions> insertNewChannelActions(const QSharedPointer<ChannelActions>&);
 
     bool                     insertNewChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
     bool                     changeChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
@@ -48,9 +48,6 @@ class QueryExecutor : public QObject
     bool                     deleteChannelTimeSlot(const QSharedPointer<Channel>&);
     bool                     deleteMarkTimeSlot(const QSharedPointer<DataMark>&);
 
-
-    bool                     changeChannelAction(const QSharedPointer<ChannelAction>&);
-    bool                     deleteChannelAction(const QSharedPointer<ChannelAction>&);
 
     signals:
 
