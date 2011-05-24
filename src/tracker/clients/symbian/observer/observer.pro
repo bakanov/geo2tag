@@ -13,6 +13,12 @@ INCLUDEPATH += ../../../../common/inc \
                ../../../../json/inc \
                ../../../../../3rdparty/qjson-0.7.1/src/
 
+CONFIG += maemo5
+
+maemo5:{
+    INCLUDEPATH += /usr/include/libxml2/
+}
+
 
 DEPLOYMENTFOLDERS = # file1 dir1
 

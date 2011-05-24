@@ -44,13 +44,15 @@
 #include <QDebug>
 #include "RSSFeedJSON.h"
 
+/*
 #ifndef Q_OS_SYMBIAN
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #else
-#include "parser.h"
-#include "serializer.h"
-#endif
+*/
+#include "../../../3rdparty/qjson-0.7.1/src/parser.h"
+#include "../../../3rdparty/qjson-0.7.1/src/serializer.h"
+//#endif
 
 #include "User.h"
 #include "Channel.h"

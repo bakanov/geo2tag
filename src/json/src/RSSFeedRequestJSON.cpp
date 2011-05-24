@@ -37,13 +37,15 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
+/*
 #ifndef Q_OS_SYMBIAN
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #else
-#include "parser.h"
-#include "serializer.h"
-#endif
+*/
+#include "../../../3rdparty/qjson-0.7.1/src/parser.h"
+#include "../../../3rdparty/qjson-0.7.1/src/serializer.h"
+//#endif
 
 RSSFeedRequestJSON::RSSFeedRequestJSON(double latitude, double longitude, double radius, QObject *parent):
 JsonSerializer(parent), m_latitude(latitude), m_longitude(longitude), m_radius(radius)
