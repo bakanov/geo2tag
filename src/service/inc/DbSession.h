@@ -89,7 +89,7 @@ namespace common
     const QString generateNewToken() const;
 
     QByteArray processLoginQuery(const QByteArray&);
-    QByteArray processQuitQuery(const QByteArray&);
+    QByteArray processLogoutQuery(const QByteArray&);
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAddNewMarkQuery(const QByteArray&);
     QByteArray processRssFeedQuery(const QByteArray&);

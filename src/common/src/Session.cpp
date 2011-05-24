@@ -1,5 +1,5 @@
 /*
- * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
+ * Copyright 2011  Tatiana Trofimova  trotava@gmail.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -58,7 +58,7 @@ double longitude,
 double radius,
 qulonglong timeSlot,
 bool isCurrentTime,
-QDateTime time):
+const QDateTime& time):
 m_latitude(latitude),
 m_longitude(longitude),
 m_radius(radius),
@@ -83,6 +83,7 @@ double Session::getLatitude() const
 void Session::setLatitude(const double& latitude)
 {
   m_latitude = latitude;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 
@@ -95,6 +96,7 @@ double Session::getLongitude() const
 void Session::setLongitude(const double& longitude)
 {
   m_longitude = longitude;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 
@@ -107,6 +109,7 @@ double Session::getRadius() const
 void Session::setRadius(const double& radius)
 {
   m_radius = radius;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 
@@ -119,6 +122,7 @@ qulonglong Session::getTimeSlot() const
 void Session::setTimeSlot(const qulonglong& timeSlot)
 {
   m_timeSlot = timeSlot;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 
@@ -133,6 +137,7 @@ QDateTime Session::getTime() const
 void Session::setTime(const QDateTime& time)
 {
   m_time = time;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 
@@ -145,6 +150,7 @@ bool Session::getIsTimeCurrent() const
 void Session::setIsTimeCurrent(bool vl)
 {
   m_isCurrentTime = vl;
+  emit valuesChanged(m_latitude, m_longitude, m_radius, m_timeSlot, m_isCurrentTime, m_time);
 }
 
 

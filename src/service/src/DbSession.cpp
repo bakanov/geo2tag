@@ -116,7 +116,7 @@ namespace common
   {
 
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
-    m_processors.insert("quit", &DbObjectsCollection::processQuitQuery);
+    m_processors.insert("logout", &DbObjectsCollection::processLogoutQuery);
     m_processors.insert("apply", &DbObjectsCollection::processAddNewMarkQuery);
     m_processors.insert("rss", &DbObjectsCollection::processRssFeedQuery);
     m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
@@ -1117,13 +1117,15 @@ namespace common
       return answer;
     }
 
-    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
-
     QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-    dummySession->setUser(realUser);
 
     m_updateThread->lockWriting();
-    m_sessionTokens[token] = dummySession;
+    m_sessionTokens[token]->setLatitude(dummySession->getLatitude());
+    m_sessionTokens[token]->setLongitude(dummySession->getLongitude());
+    m_sessionTokens[token]->setRadius(dummySession->getRadius());
+    m_sessionTokens[token]->setTimeSlot(dummySession->getTimeSlot());
+    m_sessionTokens[token]->setIsTimeCurrent(dummySession->getIsTimeCurrent());
+    m_sessionTokens[token]->setTime(dummySession->getTime());
     m_updateThread->unlockWriting();
 
     response.setStatus(ok);
@@ -1154,13 +1156,15 @@ namespace common
       return answer;
     }
 
-    QSharedPointer<User> realUser = m_sessionTokens.value(token)->getUser();
-
     QSharedPointer<Session> dummySession = QSharedPointer<Session>(new Session());
-    dummySession->setUser(realUser);
 
     m_updateThread->lockWriting();
-    m_sessionTokens[token] = dummySession;
+    m_sessionTokens[token]->setLatitude(dummySession->getLatitude());
+    m_sessionTokens[token]->setLongitude(dummySession->getLongitude());
+    m_sessionTokens[token]->setRadius(dummySession->getRadius());
+    m_sessionTokens[token]->setTimeSlot(dummySession->getTimeSlot());
+    m_sessionTokens[token]->setIsTimeCurrent(dummySession->getIsTimeCurrent());
+    m_sessionTokens[token]->setTime(dummySession->getTime());
     m_updateThread->unlockWriting();
 
     response.setStatus(ok);
@@ -1170,7 +1174,7 @@ namespace common
     return answer;
   }
 
-  QByteArray DbObjectsCollection::processQuitQuery(const QByteArray& data)
+  QByteArray DbObjectsCollection::processLogoutQuery(const QByteArray& data)
   {
     syslog(LOG_INFO, "starting QuitQuery processing");
     QuitRequestJSON request;

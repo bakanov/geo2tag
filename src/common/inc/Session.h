@@ -1,5 +1,5 @@
 /*
- * Copyright ${2011}  ${Tatiana Trofimova}  ${trotava@gmail.com}
+ * Copyright 2011  Tatiana Trofimova  trotava@gmail.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -69,7 +69,7 @@ class Session: public QObject
   public:
     Session();
 
-    Session(double latitude, double longitude, double radius, qulonglong timeSlot, bool isCurrentTime, QDateTime time);
+    Session(double latitude, double longitude, double radius, qulonglong timeSlot, bool isCurrentTime, const QDateTime& time);
 
     virtual qlonglong getId() const;
 
@@ -95,6 +95,9 @@ class Session: public QObject
     void setUser(QSharedPointer<User> user);
 
     virtual ~Session();
+
+    signals:
+    void valuesChanged(double latitude, double longitude, double radius, qulonglong timeSlot, bool isCurrentTime, const QDateTime& time);
 
   private:
     Session(const Session&);
