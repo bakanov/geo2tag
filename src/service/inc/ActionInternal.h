@@ -5,19 +5,18 @@
 
 class DbAction:public Action
 {
-    qlonglong m_id;
+  qlonglong m_id;
 
-    public:
-      DbAction(qlonglong id,
-        int mask,
-        const QString &description);
+  public:
+    DbAction(qlonglong id,
+      int mask,
+      const QString &description);
 
-      qlonglong getId() const;
+    qlonglong getId() const;
 
-      void setId(qlonglong id);
+    void setId(qlonglong id);
 
-      virtual ~DbAction();
+    virtual ~DbAction();
 
 };
-
-#endif // ACTIONINTERNAL_H
+#endif                                  // ACTIONINTERNAL_H

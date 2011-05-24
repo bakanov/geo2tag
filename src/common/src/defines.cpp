@@ -1,13 +1,20 @@
 #include <QSettings>
 #include <QDebug>
-#include <syslog.h>
 #include "defines.h"
 
 QString getServerUrl()
 {
   QSettings settings(QSettings::SystemScope,"osll","libs");
-  return settings.value("server_url").toString();
 
+  QString serverUrl=settings.value("server_url").toString();
+
+  if(serverUrl == "")
+  {
+    serverUrl = DEFAULT_SERVER;
+    setServerUrl(serverUrl);
+  }
+
+  return serverUrl;
 }
 
 
@@ -21,7 +28,16 @@ void setServerUrl(QString serverUrl)
 int getServerPort()
 {
   QSettings settings(QSettings::SystemScope,"osll","libs");
-  return settings.value("server_port").toInt();
+
+  int serverPort = settings.value("server_port").toInt();
+
+  if( serverPort == 0 )
+  {
+    serverPort = DEFAULT_PORT;
+    setServerPort(serverPort);
+  }
+
+  return serverPort;
 }
 
 

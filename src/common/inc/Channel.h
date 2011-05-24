@@ -44,9 +44,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
-#include "ConcurrentVector.h"
+//#include "ConcurrentVector.h"
 #include "TimeSlot.h"
-
 
 class Channel: public QObject
 {
@@ -59,11 +58,10 @@ class Channel: public QObject
   QSharedPointer<TimeSlot> m_timeSlot;
   bool m_timeSlotIsDefault;
 
-
   public:
 
     static const qulonglong DEFAULT_TIME_SLOT_VALUE_MIN;
-		
+
     Channel(const QString &name, const QString &description, const QString& url="");
 
     virtual qlonglong getId() const;
@@ -89,7 +87,6 @@ class Channel: public QObject
 
     bool timeSlotIsDefault() const;
     void setDefaultTimeSlot(bool);
-
 
     virtual ~Channel();
     // class Channel

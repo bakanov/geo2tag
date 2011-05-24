@@ -13,31 +13,30 @@
 #include "ActionInternal.h"
 #include "ChannelActionInternal.h"
 
-
 class UpdateThread: public QThread
 {
   Q_OBJECT
 
     QSharedPointer<Channels>       m_channelsContainer;
-    QSharedPointer<DataMarks>      m_tagsContainer;
-    QSharedPointer<Users>          m_usersContainer;
-    QSharedPointer<TimeSlots>      m_timeSlotsContainer;
-    QSharedPointer<DataChannels>   m_dataChannelsMap;
-    QSharedPointer<Actions>        m_actionsContainer;
-    QSharedPointer<ChannelActions> m_channelActionsContainer;
+  QSharedPointer<DataMarks>      m_tagsContainer;
+  QSharedPointer<common::Users>        m_usersContainer;
+  QSharedPointer<TimeSlots>      m_timeSlotsContainer;
+  QSharedPointer<DataChannels>   m_dataChannelsMap;
+  QSharedPointer<Actions>        m_actionsContainer;
+  QSharedPointer<ChannelActions> m_channelActionsContainer;
 
   QSqlDatabase m_database;
 
   //will be locked when containers is being updated
   QReadWriteLock m_updateLock;
 
-  void loadUsers(Users &);
+  void loadUsers(common::Users &);
   void loadTags(DataMarks &);
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
-  void loadActions(Actions &);
+  void updateReflections(DataMarks&, common::Users&, Channels&, TimeSlots&);
   void loadChannelActions(ChannelActions &);
-  void updateReflections(DataMarks&, Users&, Channels&, TimeSlots&, ChannelActions&);
+  void updateReflections(DataMarks&, common::Users&, Channels&, TimeSlots&, ChannelActions&);
 
   void run();
 
@@ -45,7 +44,7 @@ class UpdateThread: public QThread
     UpdateThread(
       const QSqlDatabase &db,
       const QSharedPointer<DataMarks>& tags,
-      const QSharedPointer<Users>& users,
+      const QSharedPointer<common::Users>& users,
       const QSharedPointer<Channels>& channels,
       const QSharedPointer<TimeSlots>& timeSlots,
       const QSharedPointer<DataChannels>& dataChannelsMap,

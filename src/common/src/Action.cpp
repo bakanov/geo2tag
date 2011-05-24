@@ -1,10 +1,11 @@
 #include "Action.h"
 
 Action::Action(int mask, const QString & description):
-        m_mask(mask),
-        m_description(description)
+m_mask(mask),
+m_description(description)
 {
 }
+
 
 qlonglong Action::getId() const
 {
@@ -12,27 +13,31 @@ qlonglong Action::getId() const
   return 0;
 }
 
+
 int Action::getMask()const
 {
-    return m_mask;
+  return m_mask;
 }
+
 
 void Action::setMask(int mask)
 {
-    m_mask = mask;
+  m_mask = mask;
 }
+
 
 void Action::setDescription(const QString & description)
 {
-    m_description = description;
+  m_description = description;
 }
+
 
 const QString& Action::getDescription()const
 {
-    return m_description;
+  return m_description;
 }
+
 
 Action::~Action()
 {
 }
-

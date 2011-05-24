@@ -5,14 +5,13 @@
 #include "QPair"
 #include "ConcurrentVector.h"
 
-
 class ChannelPrivileges: public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
     QMap<QPair<qlonglong,qlonglong>,int> m_data;
 
-public:
+  public:
     static const qlonglong DEFAULT_PRIVILEGES = 0;
 
     virtual qlonglong getId() const;
@@ -23,8 +22,4 @@ public:
 };
 
 typedef ConcurrentVector<ChannelPrivileges> ChannelActions;
-
-
-
-
-#endif // CHANNELACTION_H
+#endif                                  // CHANNELACTION_H

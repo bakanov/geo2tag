@@ -65,10 +65,12 @@ qlonglong QueryExecutor::nextTimeSlotKey() const
   return nextKey("timeSlots_seq");
 }
 
+
 qlonglong QueryExecutor::nextChannelActionKey() const
 {
   return nextKey("channel_actions_seq");
 }
+
 
 qlonglong QueryExecutor::nextActionKey() const
 {
@@ -164,7 +166,7 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const QSharedPointer<Cha
 }
 
 
-QSharedPointer<User> QueryExecutor::insertNewUser(const QSharedPointer<User>& user)
+QSharedPointer<common::User> QueryExecutor::insertNewUser(const QSharedPointer<common::User>& user)
 {
   bool result;
   QSqlQuery newUserQuery(m_database);
@@ -188,7 +190,7 @@ QSharedPointer<User> QueryExecutor::insertNewUser(const QSharedPointer<User>& us
   {
     syslog(LOG_INFO,"Rollback for NewUser sql query");
     m_database.rollback();
-    return QSharedPointer<User>(NULL);
+    return QSharedPointer<common::User>(NULL);
   }else
   {
     syslog(LOG_INFO,"Commit for NewUser sql query");
@@ -199,7 +201,7 @@ QSharedPointer<User> QueryExecutor::insertNewUser(const QSharedPointer<User>& us
 }
 
 
-bool QueryExecutor::subscribeChannel(const QSharedPointer<User>& user,const QSharedPointer<Channel>& channel)
+bool QueryExecutor::subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel)
 {
   bool result;
   QSqlQuery insertNewSubscribtion(m_database);
@@ -250,33 +252,33 @@ QSharedPointer<TimeSlot> QueryExecutor::insertNewTimeSlot(const QSharedPointer<T
   return newTimeSlot;
 }
 
+
 #if 0
 QSharedPointer<Action>   QueryExecutor:: insertNewAction(const QSharedPointer<Action> &action)
 {
-    bool result;
-    QSqlQuery newActionQuery(m_database);
-    qlonglong newId = nextActionKey();
-    syslog(LOG_INFO,"NewId ready, now preparing sql query for adding new id, mask, description");
-    newActionQuery.prepare("insert into action (id,mask,description) values(:id,:mask,:description);");
-    newActionQuery.bindValue(":id",newId);
-    newActionQuery.bindValue(":mask",action->getMask());
-    newActionQuery.bindValue(":description",action->getDescription());
+  bool result;
+  QSqlQuery newActionQuery(m_database);
+  qlonglong newId = nextActionKey();
+  syslog(LOG_INFO,"NewId ready, now preparing sql query for adding new id, mask, description");
+  newActionQuery.prepare("insert into action (id,mask,description) values(:id,:mask,:description);");
+  newActionQuery.bindValue(":id",newId);
+  newActionQuery.bindValue(":mask",action->getMask());
+  newActionQuery.bindValue(":description",action->getDescription());
 
-    m_database.transaction();
-    result=newActionQuery.exec();
-    if(!result)
-    {
-      syslog(LOG_INFO,"Rollback for NewAction sql query");
-      m_database.rollback();
-      return QSharedPointer<Action>(NULL);
-    } else
-    {
-      syslog(LOG_INFO,"Commit for NewAction sql query");
-      m_database.commit();
-    }
-    QSharedPointer<DbAction> newAction(new DbAction(newId, action->getMask(), action->getDescription()));
-    return newAction;
-
+  m_database.transaction();
+  result=newActionQuery.exec();
+  if(!result)
+  {
+    syslog(LOG_INFO,"Rollback for NewAction sql query");
+    m_database.rollback();
+    return QSharedPointer<Action>(NULL);
+  } else
+  {
+    syslog(LOG_INFO,"Commit for NewAction sql query");
+    m_database.commit();
+  }
+  QSharedPointer<DbAction> newAction(new DbAction(newId, action->getMask(), action->getDescription()));
+  return newAction;
 
 }
 #endif
@@ -432,4 +434,3 @@ bool QueryExecutor::deleteMarkTimeSlot(const QSharedPointer<DataMark>& tag)
   }
   return result;
 }
-

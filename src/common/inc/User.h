@@ -35,56 +35,59 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
-#define _User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
+#ifndef _User_H_83C39FC3_ECFB_41CD_8902_8176172CD890_INCLUDED_
+#define _User_H_83C39FC3_ECFB_41CD_8902_8176172CD890_INCLUDED_
 
 #include <QString>
 #include <QSharedPointer>
+#include <typeinfo>
 #include "Channel.h"
-
-
 #include "ConcurrentVector.h"
 
-class User: public QObject
+namespace common
 {
-  Q_OBJECT
-    QString m_login;
-  QString m_password;
 
-  QString m_result;
-  QString m_token;
-  // list of subscribed channels
-  QSharedPointer<Channels> m_channels;
+  class User: public QObject
+  {
+    Q_OBJECT
+      QString m_login;
+    QString m_password;
+
+    QString m_result;
+    QString m_token;
+    // list of subscribed channels
+    QSharedPointer<Channels> m_channels;
+
+    protected:
+
+      void setToken(const QString&);
+
+    public:
+
+      User(const QString& name, const QString& passw);
+
+      virtual qlonglong getId() const;
+
+      void subscribe(const QSharedPointer<Channel>& channel);
+
+      void unsubscribe(const QSharedPointer<Channel>& channel);
+
+      const QString& getLogin() const;
+      const QString& getPassword() const;
+      const QString& getToken() const;
+      const QSharedPointer<Channels> getSubscribedChannels() const;
+
+      void setPassword(const QString password);
+
+      virtual ~User();
+      // class User
+  };
+
+  typedef ConcurrentVector<User> Users;
+
+}                                       //namespace common
 
 
-  protected:
-
-    void setToken(const QString&);
-
-  public:
-
-    User(const QString& name, const QString& passw);
-
-    virtual qlonglong getId() const;
-
-    void subscribe(const QSharedPointer<Channel>& channel);
-
-    void unsubscribe(const QSharedPointer<Channel>& channel);
-
-
-
-    const QString& getLogin() const;
-    const QString& getPassword() const;
-    const QString& getToken() const;
-    const QSharedPointer<Channels> getSubscribedChannels() const;
-
-    void setPassword(const QString password);
-
-    virtual ~User();
-    // class User
-};
-
-typedef ConcurrentVector<User> Users;
 //_User_H_83C39FC3_ECFB_41CD_8902_81D6172CD890_INCLUDED_
 #endif
 
