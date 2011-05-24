@@ -20,6 +20,7 @@ linux: {
              http_requests \
              maps \ 
              service \
+						 tracker \
 	     common/tst
 }
 
