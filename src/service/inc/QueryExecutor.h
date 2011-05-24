@@ -33,13 +33,13 @@ class QueryExecutor : public QObject
 
     const QString generateNewToken(const QString& login,const QString& password) const;
 
-    bool                     subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
-    QSharedPointer<DataMark>      insertNewTag(const QSharedPointer<DataMark>&);
-    QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
-    QSharedPointer<Channel>       insertNewChannel(const QSharedPointer<Channel>&);
-    QSharedPointer<TimeSlot>      insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
-    QSharedPointer<Action>        insertNewAction(const QSharedPointer<Action>&);
-    QSharedPointer<ChannelActions> insertNewChannelActions(const QSharedPointer<ChannelActions>&);
+    bool                               subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
+    QSharedPointer<DataMark>           insertNewTag(const QSharedPointer<DataMark>&);
+    QSharedPointer<common::User>       insertNewUser(const QSharedPointer<common::User>&);
+    QSharedPointer<Channel>            insertNewChannel(const QSharedPointer<Channel>&);
+    QSharedPointer<TimeSlot>           insertNewTimeSlot(const QSharedPointer<TimeSlot>&);
+    //QSharedPointer<Action>           insertNewAction(const QSharedPointer<Action>&);
+    QSharedPointer<ChannelPrivileges>  insertNewChannelActions(const QSharedPointer<ChannelActions>&);
 
     bool                     insertNewChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);
     bool                     changeChannelTimeSlot(const QSharedPointer<Channel>&, const QSharedPointer<TimeSlot>&);

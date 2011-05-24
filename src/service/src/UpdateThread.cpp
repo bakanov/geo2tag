@@ -60,6 +60,7 @@ void UpdateThread::run()
     loadTags(tagsContainer);
     loadChannels(channelsContainer);
     loadTimeSlots(timeSlotsContainer);
+ //   loadActions(actionsContainer);
 
     lockWriting();
     m_usersContainer->merge(usersContainer);
@@ -89,6 +90,7 @@ void UpdateThread::run()
     syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
     syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
     syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
+    syslog(LOG_INFO, "current channel actions size = %d", m_channelActionsContainer->size());
     m_database.close();
     QThread::msleep(10000);
   }
@@ -202,7 +204,7 @@ void UpdateThread::loadTags(DataMarks &container)
 
 
 #if 0
-void UpdateThread::loadActions(Actions & /*container*/)
+void UpdateThread::loadActions(Actions & container)
 {
   QSqlQuery query(m_database);
   query.exec("select id, mask, description from action;");
@@ -222,7 +224,7 @@ void UpdateThread::loadActions(Actions & /*container*/)
   }
 }
 
-
+//#if 0
 void UpdateThread::loadChannelActions(ChannelActions & /*container*/)
 {
   QSqlQuery query(m_database);
@@ -327,14 +329,18 @@ void UpdateThread::updateReflections(DataMarks &tags, common::Users &users, Chan
 
     query.exec("select user_id, channel_id, action from channel_action;");
 
+    ChannelPrivileges *privs = new ChannelPrivileges();
+    QSharedPointer<ChannelPrivileges> pointer(privs);
+    channelActions.push_back(pointer);
+
+
     while (query.next())
     {
       qlonglong user = query.record().value("user_id").toLongLong();
       qlonglong channel = query.record().value("channel_id").toLongLong();
       int action = query.record().value("action").toInt();
-
       channelActions.at(ChannelPrivileges::DEFAULT_PRIVILEGES)->setPrivileges(user,channel,action);
-
+      syslog(LOG_INFO,  "current channels actions' size = %d", channelActions.size());
     }
   }
 }

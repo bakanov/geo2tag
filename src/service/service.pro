@@ -67,7 +67,7 @@ SOURCES += src/main.cpp \
            src/DbSession.cpp \
            src/UpdateThread.cpp \
            src/QueryExecutor.cpp \
-           src/TimeSlotInternal.cpp\
+           src/TimeSlotInternal.cpp \
     src/ActionInternal.cpp \
     src/ChannelActionInternal.cpp
 

@@ -10,3 +10,10 @@ void ChannelPrivileges::setPrivileges(qlonglong user, qlonglong channel, int act
 {
   m_data[QPair<qlonglong,qlonglong>(user,channel)] = actions;
 }
+
+/*bool ChannelPrivileges::isAllowed(qlonglong user, qlonglong channel, int actions)
+{
+
+
+    return false;
+}*/

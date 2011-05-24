@@ -95,9 +95,11 @@ id NUMERIC(9,0) NOT NULL DEFAULT nextval('channel_actions_seq'),
 user_id NUMERIC(9,0) NOT NULL,
 channel_id NUMERIC(9,0) NOT NULL,
 action SERIAL,
-CONSTRAINT channel_action_pkey primary key (id),
-CONSTRAINT user_id_channel_action_fk foreign key (user_id) references users(id) on delete cascade,
-CONSTRAINT channel_id_fk foreign key (channel_id) references channel(id) on delete cascade,
+constraint channel_action_pkey primary key (id),
+constraint fk_user_id foreign key (user_id) references users(id) 
+on delete cascade,
+constraint fk_channel_id foreign key (channel_id) references channel(id)
+ on delete cascade,
 unique (user_id, channel_id, action)
 );
 
@@ -108,25 +110,11 @@ id NUMERIC(9,0) NOT NULL DEFAULT nextval('tag_actions_seq'),
 user_id NUMERIC(9,0) NOT NULL,
 tag_id NUMERIC(9,0) NOT NULL,
 action SERIAL,
-CONSTRAINT tag_action_pkey primary key (id),
-CONSTRAINT user_id_fk foreign key (user_id) references users(id) on delete cascade,
-CONSTRAINT tag_id_fk foreign key (tag_id) references tag(id) on delete cascade,
+constraint tag_action_pkey primary key (id),
+constraint fk_user_id foreign key (user_id) references users(id) on delete cascade,
+constraint fk_tag_id foreign key (tag_id) references tag(id) on delete cascade,
 unique (user_id, tag_id, action)
 );
-
-INSERT into channel_action (user_id, channel_id, action) values (5, 3, 3);
-INSERT into channel_action (user_id, channel_id, action) values (2, 5, 5);
-INSERT into channel_action (user_id, channel_id, action) values (3, 4, 3);
-
-INSERT into action (mask, description) values (1,  'subscribe');
-INSERT into action (mask, description) values (2,  'unsubscribe');
-INSERT into action (mask, description) values (4,  'write');
-INSERT into action (mask, description) values (8,  'read');
-INSERT into action (mask, description) values (16, 'create');
-INSERT into action (mask, description) values (32, 'remove');
-
-INSERT into tag_action (user_id, tag_id, action) values (1, 1, 3);
-INSERT into tag_action (user_id, tag_id, action) values (2, 1, 3);
 
 
 
@@ -171,3 +159,17 @@ INSERT into channelTimeSlot (channel_id, timeSlot_id) values (5, 2);
 
 INSERT into tagTimeSlot (tag_id, timeSlot_id) values (5, 2);
 INSERT into tagTimeSlot (tag_id, timeSlot_id) values (6, 1);
+
+INSERT into channel_action (user_id, channel_id, action) values (1, 3, 3);
+INSERT into channel_action (user_id, channel_id, action) values (2, 2, 5);
+INSERT into channel_action (user_id, channel_id, action) values (3, 4, 3);
+
+INSERT into action (mask, description) values (1,  'subscribe');
+INSERT into action (mask, description) values (2,  'unsubscribe');
+INSERT into action (mask, description) values (4,  'write');
+INSERT into action (mask, description) values (8,  'read');
+INSERT into action (mask, description) values (16, 'create');
+INSERT into action (mask, description) values (32, 'remove');
+
+INSERT into tag_action (user_id, tag_id, action) values (1, 1, 3);
+INSERT into tag_action (user_id, tag_id, action) values (2, 1, 3);

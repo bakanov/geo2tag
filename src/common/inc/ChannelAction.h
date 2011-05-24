@@ -17,8 +17,9 @@ class ChannelPrivileges: public QObject
     virtual qlonglong getId() const;
 
     void setPrivileges(qlonglong user, qlonglong channel, int actions);
+
     bool isAllowed(qlonglong user, qlonglong channel, int actions);
-    qlonglong getUser()const;
+
 };
 
 typedef ConcurrentVector<ChannelPrivileges> ChannelActions;

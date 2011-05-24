@@ -281,6 +281,35 @@ QSharedPointer<Action>   QueryExecutor:: insertNewAction(const QSharedPointer<Ac
   return newAction;
 
 }
+
+
+QSharedPointer<ChannelPrivileges>   QueryExecutor:: insertNewAction(const QSharedPointer<ChannelActions> &channelActions)
+{
+  bool result;
+  QSqlQuery newChannelActionQuery(m_database);
+  qlonglong newId = nextChannelActionKey();
+  syslog(LOG_INFO,"NewId ready, now preparing sql query for adding new id, user_id, channel_id, action");
+  newChannelActionQuery.prepare("insert into channel_action (id,user_id,channel_id,action) values(:id,:user_id,:channel_id,:action);");
+  newChannelActionQuery.bindValue(":id",newId);
+  //newChannelActionQuery.bindValue(":user_id",channelActions->//action->getMask());
+  //newChannelActionQuery.bindValue(":description",action->getDescription());
+
+  m_database.transaction();
+  result=newActionQuery.exec();
+  if(!result)
+  {
+    syslog(LOG_INFO,"Rollback for NewAction sql query");
+    m_database.rollback();
+    return QSharedPointer<Action>(NULL);
+  } else
+  {
+    syslog(LOG_INFO,"Commit for NewAction sql query");
+    m_database.commit();
+  }
+  QSharedPointer<DbAction> newAction(new DbAction(newId, action->getMask(), action->getDescription()));
+  return newAction;
+
+}
 #endif
 bool QueryExecutor::insertNewChannelTimeSlot(const QSharedPointer<Channel>& channel, const QSharedPointer<TimeSlot>& timeSlot)
 {

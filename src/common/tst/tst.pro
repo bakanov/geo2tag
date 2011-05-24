@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     ../src/GpsModeller.cpp \ 
     Channel_TestObj.cpp \
     ../src/Channel.cpp \
-    ../src/TimeSlot.cpp
+    ../src/TimeSlot.cpp \
+    ../src/ChannelAction.cpp
 HEADERS += User_Test.h \
     ../inc/User.h \
     ../inc/GpsInfo.h \
@@ -18,7 +19,8 @@ HEADERS += User_Test.h \
     Channel_Test.h \
     Channel_TestObj.h \
     ../inc/Channel.h \
-    ../inc/TimeSlot.h
+    ../inc/TimeSlot.h \
+    ../inc/ChannelAction.h
 
 DEFINES += SIMULATE_GPS
 

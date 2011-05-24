@@ -43,6 +43,7 @@
 #include "User_Test.h"
 #include "GpsInfo_Test.h"
 #include "Channel_Test.h"
+#include "syslog.h"
 
 int main(int c, char **v)
 {
@@ -57,7 +58,7 @@ int main(int c, char **v)
 
   for(size_t i = 0; i<sizeof(tests)/sizeof(QObject*); ++i)
   {
-    QTest::qExec(tests[i]);
+     QTest::qExec(tests[i]);
   }
 
   return 0;

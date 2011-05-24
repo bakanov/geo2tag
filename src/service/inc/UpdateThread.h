@@ -12,18 +12,19 @@
 #include "TimeSlotInternal.h"
 #include "ActionInternal.h"
 #include "ChannelActionInternal.h"
+#include "ChannelAction.h"
 
 class UpdateThread: public QThread
 {
   Q_OBJECT
 
-    QSharedPointer<Channels>       m_channelsContainer;
-  QSharedPointer<DataMarks>      m_tagsContainer;
+    QSharedPointer<Channels>           m_channelsContainer;
+  QSharedPointer<DataMarks>            m_tagsContainer;
   QSharedPointer<common::Users>        m_usersContainer;
-  QSharedPointer<TimeSlots>      m_timeSlotsContainer;
-  QSharedPointer<DataChannels>   m_dataChannelsMap;
-  QSharedPointer<Actions>        m_actionsContainer;
-  QSharedPointer<ChannelActions> m_channelActionsContainer;
+  QSharedPointer<TimeSlots>            m_timeSlotsContainer;
+  QSharedPointer<DataChannels>         m_dataChannelsMap;
+  QSharedPointer<Actions>              m_actionsContainer;
+  QSharedPointer<ChannelActions>       m_channelActionsContainer;
 
   QSqlDatabase m_database;
 
@@ -34,8 +35,7 @@ class UpdateThread: public QThread
   void loadTags(DataMarks &);
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
-  void updateReflections(DataMarks&, common::Users&, Channels&, TimeSlots&);
-  void loadChannelActions(ChannelActions &);
+//  void loadActions(Actions &);
   void updateReflections(DataMarks&, common::Users&, Channels&, TimeSlots&, ChannelActions&);
 
   void run();
