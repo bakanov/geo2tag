@@ -23,11 +23,13 @@ maemo5 {
 SOURCES += MaemoDaemon.cpp
 HEADERS += MaemoDaemon.h
 DEFINES += MAEMO5_UI
+LIBS += -lqjson -lcommon -lwikigpsHttp -lwikigpsJson
 }
 
 linux {
 SOURCES += MaemoDaemon.cpp
 HEADERS += MaemoDaemon.h
+LIBS += -lqjson -lcommon -lwikigpsHttp -lwikigpsJson
 }
 
 symbian {
