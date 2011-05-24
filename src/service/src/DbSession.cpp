@@ -131,8 +131,6 @@ namespace common
       m_dataChannelsMap,
       NULL);
 
-    m_updateThread->start();
-
     m_queryExecutor = new QueryExecutor(QSqlDatabase::cloneDatabase(database,"executor"), NULL);
 
   }
@@ -143,15 +141,20 @@ namespace common
     return s;
   }
 
+  void DbObjectsCollection::startUpdate()
+  {
+      m_updateThread->start();
+  }
+
   void DbObjectsCollection::stopUpdate()
   {
-    m_updateThread->quit();
-    delete m_updateThread;
-    delete m_queryExecutor;
+      m_updateThread->terminate();
+      m_updateThread->wait();
   }
 
   DbObjectsCollection::~DbObjectsCollection()
   {
+    m_updateThread->terminate();
     m_updateThread->wait();
     delete m_updateThread;
     delete m_queryExecutor;
@@ -1035,6 +1038,11 @@ namespace common
 
   }
 
+}
+
+void common::DbObjectsCollection::forceUpdate()
+{
+    m_updateThread->forceUpdate();
 }                                       // namespace common
 
 

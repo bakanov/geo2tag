@@ -69,7 +69,7 @@ namespace common
     QSharedPointer<TimeSlots>    m_timeSlotsContainer;
     QSharedPointer<DataChannels> m_dataChannelsMap;
 
-    UpdateThread *              m_updateThread;
+    UpdateThread *               m_updateThread;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
 
@@ -101,9 +101,11 @@ namespace common
     public:
 
       static DbObjectsCollection& getInstance();
+      void forceUpdate();
 
       QByteArray process(const QString& queryType, const QByteArray& body);
 
+      void startUpdate();
       void stopUpdate();
 
       ~DbObjectsCollection();

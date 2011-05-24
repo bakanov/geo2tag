@@ -36,52 +36,7 @@ void UpdateThread::run()
 {
   for(;;)
   {
-    syslog(LOG_INFO, "trying to connect to database..., file: %s, line: %d", __FILE__, __LINE__);
-    bool result = m_database.open();
-    if(!result)
-    {
-      syslog(LOG_INFO, "connection error %s",m_database.lastError().text().toStdString().c_str());
-      QThread::msleep(1000);
-      continue;
-    }
-    qDebug() << "connected...";
-    Users       usersContainer(*m_usersContainer);
-    DataMarks   tagsContainer(*m_tagsContainer);
-    Channels    channelsContainer(*m_channelsContainer);
-    TimeSlots   timeSlotsContainer(*m_timeSlotsContainer);
-
-    loadUsers(usersContainer);
-    loadTags(tagsContainer);
-    loadChannels(channelsContainer);
-    loadTimeSlots(timeSlotsContainer);
-
-    lockWriting();
-    m_usersContainer->merge(usersContainer);
-    m_tagsContainer->merge(tagsContainer);
-    m_channelsContainer->merge(channelsContainer);
-    m_timeSlotsContainer->merge(timeSlotsContainer);
-
-    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);
-
-    for(int i=0; i<m_tagsContainer->size(); i++)
-    {
-      QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
-      QSharedPointer<Channel> channel = tag->getChannel();
-      if(!m_dataChannelsMap->contains(channel, tag))
-      {
-        // syslog(LOG_INFO, "adding %d from %d tag %s to channel %s", i, m_tagsContainer->size(),
-        // tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz").toStdString().c_str(), channel->getName().toStdString().c_str());
-
-        m_dataChannelsMap->insert(channel, tag);
-      }
-    }
-    syslog(LOG_INFO, "tags added. trying to unlock");
-    unlockWriting();
-
-    syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
-    syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
-    syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
-    m_database.close();
+    forceUpdate();
     QThread::msleep(10000);
   }
 }
@@ -271,4 +226,53 @@ void UpdateThread::updateReflections(DataMarks &tags, Users &users, Channels &ch
     }
   }
 
+}
+
+void UpdateThread::forceUpdate()
+{
+    syslog(LOG_INFO, "trying to connect to database..., file: %s, line: %d", __FILE__, __LINE__);
+    bool result = m_database.open();
+    if(!result)
+    {
+      syslog(LOG_INFO, "connection error %s",m_database.lastError().text().toStdString().c_str());
+      return;
+    }
+    qDebug() << "connected...";
+    Users       usersContainer(*m_usersContainer);
+    DataMarks   tagsContainer(*m_tagsContainer);
+    Channels    channelsContainer(*m_channelsContainer);
+    TimeSlots   timeSlotsContainer(*m_timeSlotsContainer);
+
+    loadUsers(usersContainer);
+    loadTags(tagsContainer);
+    loadChannels(channelsContainer);
+    loadTimeSlots(timeSlotsContainer);
+
+    lockWriting();
+    m_usersContainer->merge(usersContainer);
+    m_tagsContainer->merge(tagsContainer);
+    m_channelsContainer->merge(channelsContainer);
+    m_timeSlotsContainer->merge(timeSlotsContainer);
+
+    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);
+
+    for(int i=0; i<m_tagsContainer->size(); i++)
+    {
+      QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
+      QSharedPointer<Channel> channel = tag->getChannel();
+      if(!m_dataChannelsMap->contains(channel, tag))
+      {
+        // syslog(LOG_INFO, "adding %d from %d tag %s to channel %s", i, m_tagsContainer->size(),
+        // tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz").toStdString().c_str(), channel->getName().toStdString().c_str());
+
+        m_dataChannelsMap->insert(channel, tag);
+      }
+    }
+    syslog(LOG_INFO, "tags added. trying to unlock");
+    unlockWriting();
+
+    syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
+    syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
+    syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
+    m_database.close();
 }

@@ -48,10 +48,10 @@
 
 namespace
 {
-  const QString requestLogin = "{\"login\":\"Kirill\",\"password\":\"test\"}";
-  const QString request = "{\"auth_token\":\"KKKKKKKKKK\", \"name\":\"Test channel9\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
+  const QString master_requestLogin = "{\"login\":\"Kirill\",\"password\":\"test\"}";
+  const QString master_request = "{\"auth_token\":\"KKKKKKKKKK\", \"name\":\"Test channel9\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
                          \"activeRadius\":3000}";
-  const QString reply = "{ \"status\" : \"Ok\", \"status_description\" : \"Channel added\" }";
+  const QString master_reply = "{ \"status\" : \"Ok\", \"status_description\" : \"Channel added\" }";
 }
 
 
@@ -61,32 +61,34 @@ namespace Test
   {
     Q_OBJECT;
 
-    common::DbObjectsCollection * dboc;
+    common::DbObjectsCollection&  m_db;
     QByteArray requestLoginByte;
     QByteArray requestByte;
     QByteArray replyByte;
 
     public:
 
-      ChannelAdd_Test(QObject *parent = NULL) : QObject(parent)
+      ChannelAdd_Test(QObject *parent = NULL) : QObject(parent), m_db(common::DbObjectsCollection::getInstance())
       {
-        dboc = &common::DbObjectsCollection::getInstance();
-        requestLoginByte.append(requestLogin);
-        requestByte.append(request);
-        replyByte.append(reply);
+        m_db.forceUpdate();
+        requestLoginByte.append(master_requestLogin);
+        requestByte.append(master_request);
+        replyByte.append(master_reply);
       }
 
       ~ChannelAdd_Test()
       {
-        dboc->stopUpdate();
       }
 
     private slots:
 
       void addChannel()
       {
-        dboc->process("login", requestLoginByte);
-        QCOMPARE( QString(dboc->process("addChannel", requestByte).data()), QString(replyByte.data()));
+        m_db.process("login", requestLoginByte);
+        QString reply=QString(m_db.process("addChannel", requestByte).data());
+        m_db.forceUpdate();
+
+        QCOMPARE(reply,master_reply);
       }
 
   };                                    // class AddChannel_Test
