@@ -5,15 +5,13 @@
 #include "JsonDataMark.h"
 #include "JsonUser.h"
 
-/*
-#ifndef Q_OS_SYMBIAN
+#if !defined(Q_OS_SYMBIAN) && !defined(MAEMO_OS)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #else
-*/
-#include "../../../3rdparty/qjson-0.7.1/src/parser.h"
-#include "../../../3rdparty/qjson-0.7.1/src/serializer.h"
-//#endif
+#include "parser.h"
+#include "serializer.h"
+#endif
 
 AddNewMarkRequestJSON::AddNewMarkRequestJSON(QObject *parent) : JsonSerializer(parent)
 {

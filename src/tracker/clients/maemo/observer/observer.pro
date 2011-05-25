@@ -5,27 +5,19 @@
 
 VERSION = 0.16.1
 
-INCLUDEPATH += ../../../../common/inc \
+INCLUDEPATH += \
+               ../../../../3rdparty/qjson-0.7.1/src/ \
+               ../../../../common/inc \
                ../../../../maps/inc \
                ../../../../http_requests/inc \
                ../../../../tracker/ui/ \
                ../../../../tracker/ui/inc \
                ../../../../json/inc \
-               ../../../../../3rdparty/qjson-0.7.1/src/
-
-CONFIG += maemo5
-
-maemo5:{
-    INCLUDEPATH += /usr/include/libxml2/
-}
-
+                /usr/include/libxml2/
 
 DEPLOYMENTFOLDERS = # file1 dir1
 
-symbian:TARGET.UID3 = 0x20041E3E
-
-# Allow network access on Symbian
-symbian:TARGET.CAPABILITY += NetworkServices
+DEFINES += MAEMO_OS
 
 # If your application uses the Qt Mobility libraries, uncomment
 # the following lines and add the respective components to the 
@@ -37,6 +29,13 @@ QT += network
 # LIBS +=
 
 SOURCES += \
+    ../../../../3rdparty/qjson-0.7.1/src/serializerrunnable.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/serializer.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/qobjecthelper.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/parserrunnable.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/parser.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/json_scanner.cpp \
+    ../../../../3rdparty/qjson-0.7.1/src/json_parser.cc \
     ../../../observer/ViewOptsWidget.cpp \
     ../../../observer/MainWindow.cpp \
     ../../../observer/main.cpp \
@@ -72,16 +71,22 @@ SOURCES += \
     ../../../../common/src/GpsInfo.cpp \
     ../../../../common/src/GpsModeller.cpp \
     ../../../../common/src/MobilityGps.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/serializerrunnable.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/serializer.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/qobjecthelper.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/parserrunnable.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/parser.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/json_scanner.cpp \
-    ../../../../../3rdparty/qjson-0.7.1/src/json_parser.cc \
     ../../../../maps/src/LightMap.cpp \
     ../../../../maps/src/SlippyMap.cpp
 HEADERS += \
+    ../../../../3rdparty/qjson-0.7.1/src/parser.h \
+    ../../../../3rdparty/qjson-0.7.1/src/serializerrunnable.h \
+    ../../../../3rdparty/qjson-0.7.1/src/serializer.h \
+    ../../../../3rdparty/qjson-0.7.1/src/qobjecthelper.h \
+    ../../../../3rdparty/qjson-0.7.1/src/qjson_export.h \
+    ../../../../3rdparty/qjson-0.7.1/src/qjson_debug.h \
+    ../../../../3rdparty/qjson-0.7.1/src/parser_p.h \
+    ../../../../3rdparty/qjson-0.7.1/src/json_scanner.h \
+    ../../../../3rdparty/qjson-0.7.1/src/parserrunnable.h \
+    ../../../../3rdparty/qjson-0.7.1/src/json_parser.hh \
+    ../../../../3rdparty/qjson-0.7.1/src/stack.hh \
+    ../../../../3rdparty/qjson-0.7.1/src/location.hh \
+    ../../../../3rdparty/qjson-0.7.1/src/position.hh \
     ../../../observer/ViewOptsWidget.h \
     ../../../observer/MainWindow.h \
     ../../../observer/main.h \
@@ -125,32 +130,16 @@ HEADERS += \
     ../../../../common/inc/defines.h \
     ../../../../common/inc/DataChannel.h \
     ../../../../common/inc/symbian.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/parser.h \
     ../../../../json/inc/DefaultResponseJSON.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/serializerrunnable.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/serializer.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/qobjecthelper.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/qjson_export.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/qjson_debug.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/parser_p.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/json_scanner.h \
     ../../../../maps/inc/LightMap.h \
     ../../../../maps/inc/SlippyMap.h \
     ../../../ui/tracker.h \
     ../../../ui/inc/ByteSpinBox.h \
     ../../../../common/inc/GpsInfo.h \
     ../../../../common/inc/GpsModeller.h \
-    ../../../../common/inc/MobilityGps.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/parserrunnable.h \
-    ../../../../../3rdparty/qjson-0.7.1/src/json_parser.hh \
-    ../../../../../3rdparty/qjson-0.7.1/src/stack.hh \
-    ../../../../../3rdparty/qjson-0.7.1/src/location.hh \
-    ../../../../../3rdparty/qjson-0.7.1/src/position.hh
+    ../../../../common/inc/MobilityGps.h
 FORMS +=
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)
 qtcAddDeployment()
-
-OTHER_FILES += \
-    ../../../../../../../tmp/OVI_2011-04-26.crt
