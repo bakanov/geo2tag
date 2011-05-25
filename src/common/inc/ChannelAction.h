@@ -20,6 +20,7 @@ class ChannelPrivileges: public QObject
 
     bool isAllowed(qlonglong user, qlonglong channel, int actions);
 
+    int size()const;
 };
 
 typedef ConcurrentVector<ChannelPrivileges> ChannelActions;

@@ -11,7 +11,6 @@
 #include "DataChannel.h"
 #include "TimeSlotInternal.h"
 #include "ActionInternal.h"
-#include "ChannelActionInternal.h"
 #include "ChannelAction.h"
 
 class UpdateThread: public QThread
@@ -35,7 +34,8 @@ class UpdateThread: public QThread
   void loadTags(DataMarks &);
   void loadChannels(Channels &);
   void loadTimeSlots(TimeSlots &);
-//  void loadActions(Actions &);
+  void loadActions(Actions &);
+
   void updateReflections(DataMarks&, common::Users&, Channels&, TimeSlots&, ChannelActions&);
 
   void run();

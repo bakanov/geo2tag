@@ -17,6 +17,5 @@ class DbAction:public Action
     void setId(qlonglong id);
 
     virtual ~DbAction();
-
 };
 #endif                                  // ACTIONINTERNAL_H

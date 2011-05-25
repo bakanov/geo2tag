@@ -1,9 +1,8 @@
 #include "ActionInternal.h"
 
-#if 0
 DbAction::DbAction(qlonglong id,
 int mask,
-QString &description):
+const QString &description):
 Action(mask, description), m_id(id)
 {
 }
@@ -20,8 +19,7 @@ void DbAction::setId(qlonglong id)
   m_id = id;
 }
 
-
-virtual DbAction::~DbAction()
+DbAction::~DbAction()
 {
 }
-#endif
+
