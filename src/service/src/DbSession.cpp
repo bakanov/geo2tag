@@ -122,6 +122,8 @@ namespace common
     database.setUserName("geo2tag");
     database.setPassword("geo2tag");
 
+    m_queryExecutor = new QueryExecutor(QSqlDatabase::cloneDatabase(database,"executor"), NULL);
+
     m_updateThread = new UpdateThread(
       QSqlDatabase::cloneDatabase(database,"updateThread"),
       m_tagsContainer,
@@ -130,9 +132,6 @@ namespace common
       m_timeSlotsContainer,
       m_dataChannelsMap,
       NULL);
-
-    m_queryExecutor = new QueryExecutor(QSqlDatabase::cloneDatabase(database,"executor"), NULL);
-
   }
 
   DbObjectsCollection& DbObjectsCollection::getInstance()

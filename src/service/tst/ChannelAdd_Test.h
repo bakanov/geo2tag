@@ -44,12 +44,13 @@
 #include </usr/include/qt4/QtSql/qsql_psql.h>
 
 #include "DbSession.h"
+#include  "LoginResponseJSON.h"
 //#include "QueryExecutor.h"
 
 namespace
 {
   const QString master_requestLogin = "{\"login\":\"Kirill\",\"password\":\"test\"}";
-  const QString master_request = "{\"auth_token\":\"KKKKKKKKKK\", \"name\":\"Test channel9\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
+  const QString master_request = "{\"auth_token\":\"KKKKKKK\", \"name\":\"Tewertstsdfds channe\", \"description\":\"test chanel\", \"url\":\"http://osll.spb.ru/\", \
                          \"activeRadius\":3000}";
   const QString master_reply = "{ \"status\" : \"Ok\", \"status_description\" : \"Channel added\" }";
 }
@@ -84,11 +85,14 @@ namespace Test
 
       void addChannel()
       {
-        m_db.process("login", requestLoginByte);
         QString reply=QString(m_db.process("addChannel", requestByte).data());
         m_db.forceUpdate();
+        qDebug() << "reply=" << reply;
+        int pos = reply.indexOf("{");
+        reply.remove(0, pos);
+        qDebug() << "reply=" << reply;
 
-        QCOMPARE(reply,master_reply);
+        QCOMPARE(0,reply.compare(master_reply));
       }
 
   };                                    // class AddChannel_Test

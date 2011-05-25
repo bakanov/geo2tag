@@ -254,7 +254,7 @@ void UpdateThread::forceUpdate()
     m_channelsContainer->merge(channelsContainer);
     m_timeSlotsContainer->merge(timeSlotsContainer);
 
-    updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);
+    //updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_timeSlotsContainer);
 
     for(int i=0; i<m_tagsContainer->size(); i++)
     {
