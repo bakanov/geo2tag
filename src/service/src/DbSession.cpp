@@ -142,13 +142,13 @@ namespace common
 
   void DbObjectsCollection::startUpdate()
   {
-      m_updateThread->start();
+    m_updateThread->start();
   }
 
   void DbObjectsCollection::stopUpdate()
   {
-      m_updateThread->terminate();
-      m_updateThread->wait();
+    m_updateThread->terminate();
+    m_updateThread->wait();
   }
 
   DbObjectsCollection::~DbObjectsCollection()
@@ -1039,9 +1039,10 @@ namespace common
 
 }
 
+
 void common::DbObjectsCollection::forceUpdate()
 {
-    m_updateThread->forceUpdate();
+  m_updateThread->forceUpdate();
 }                                       // namespace common
 
 
