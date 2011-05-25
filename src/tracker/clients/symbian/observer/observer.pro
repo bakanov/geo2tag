@@ -16,7 +16,7 @@ INCLUDEPATH += ../../../../common/inc \
 
 DEPLOYMENTFOLDERS = # file1 dir1
 
-symbian:TARGET.UID3 = 0x20041E3E
+#symbian:TARGET.UID3 = 0x20041E3E
 
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
@@ -146,5 +146,5 @@ FORMS +=
 include(deployment.pri)
 qtcAddDeployment()
 
-OTHER_FILES += \
-    ../../../../../../../tmp/OVI_2011-04-26.crt
+#OTHER_FILES += \
+#    ../../../../../../../tmp/OVI_2011-04-26.crt
