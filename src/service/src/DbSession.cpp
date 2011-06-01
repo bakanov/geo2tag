@@ -434,8 +434,6 @@ namespace common
     {
       QSharedPointer<Channel> channel = channels->at(i);
       QList<QSharedPointer<DataMark> > tags = m_dataChannelsMap->values(channel);
-      //qSort(tags);
-      //QList<QSharedPointer<DataMark> > last10 = tags.mid(tags.size()>10?tags.size()-10:0, 10);
       for(int j = 0; j<tags.size(); j++)
       {
         if ( ( (tags.at(j)->getLatitude()) <= (latitudeCenter + angleofZone) ) &&
