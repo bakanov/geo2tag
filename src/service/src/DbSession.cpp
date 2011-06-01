@@ -54,6 +54,9 @@
 #include "RSSFeedRequestJSON.h"
 #include "RSSFeedJSON.h"
 
+#include "RSSFeedSessionRequestJSON.h"
+#include "RSSFeedSessionResponseJSON.h"
+
 #include "AddChannelRequestJSON.h"
 #include "AddChannelResponseJSON.h"
 
@@ -99,6 +102,7 @@
 #include <QtSql>
 #include <QMap>
 #include <QUuid>
+#include <math.h>
 
 namespace common
 {
@@ -119,6 +123,7 @@ namespace common
     m_processors.insert("logout", &DbObjectsCollection::processLogoutQuery);
     m_processors.insert("apply", &DbObjectsCollection::processAddNewMarkQuery);
     m_processors.insert("rss", &DbObjectsCollection::processRssFeedQuery);
+    m_processors.insert("rssSession", &DbObjectsCollection::processRssFeedSessionQuery);
     m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
     m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
     m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
@@ -383,6 +388,66 @@ namespace common
       }
     }
     RSSFeedResponseJSON response(feed);
+    response.setStatus(ok);
+    response.setStatusMessage("feed has been generated");
+    answer.append(response.getJson());
+    syslog(LOG_INFO, "answer: %s", answer.data());
+    return answer;
+  }
+
+  QByteArray DbObjectsCollection::processRssFeedSessionQuery(const QByteArray &data)
+  {
+    RSSFeedSessionRequestJSON request;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+
+    request.parseJson(data);
+
+    QString token = request.getAuthToken();
+
+    if (!(m_sessionTokens.contains(token)))
+    {
+      DefaultResponseJSON response;
+      response.setStatus(error);
+      response.setStatusMessage("Wrong authentification key");
+      answer.append(response.getJson());
+      return answer;
+    }
+
+    QSharedPointer<Session> realSession =  m_sessionTokens.value(token);
+    QSharedPointer<User> realUser = realSession->getUser();
+    double latitudeCenter = realSession->getLatitude();
+    double longitudeCenter = realSession->getLongitude();
+    double radiusOfZone = realSession->getRadius();
+    qulonglong timeSlotOfZone = realSession->getTimeSlot();
+    QDateTime timeCenter = realSession->getTime();
+
+    QDateTime maxTimeOfZone = timeCenter.addSecs(timeSlotOfZone*60);
+    QDateTime minTimeOfZone = timeCenter.addSecs(-timeSlotOfZone*60);
+
+    double angleofZone = atan (radiusOfZone/RADIUS_EARTH) * 180 / PI;
+    syslog(LOG_INFO,"angleofZone = %f", angleofZone);
+
+    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
+    DataChannels feed;
+
+    for(int i = 0; i<channels->size(); i++)
+    {
+      QSharedPointer<Channel> channel = channels->at(i);
+      QList<QSharedPointer<DataMark> > tags = m_dataChannelsMap->values(channel);
+      //qSort(tags);
+      //QList<QSharedPointer<DataMark> > last10 = tags.mid(tags.size()>10?tags.size()-10:0, 10);
+      for(int j = 0; j<tags.size(); j++)
+      {
+        if ( ( (tags.at(j)->getLatitude()) <= (latitudeCenter + angleofZone) ) &&
+          ( (tags.at(j)->getLatitude()) >= (latitudeCenter - angleofZone) ) &&
+          ( (tags.at(j)->getLongitude()) <= (longitudeCenter + angleofZone) ) &&
+          ( (tags.at(j)->getLongitude()) >= (longitudeCenter - angleofZone) ) &&
+          ( (tags.at(j)->getTime()) <= maxTimeOfZone )  &&
+          ( (tags.at(j)->getTime()) >= minTimeOfZone ) )
+          feed.insert(channel, tags.at(j));
+      }
+    }
+    RSSFeedSessionResponseJSON response(feed);
     response.setStatus(ok);
     response.setStatusMessage("feed has been generated");
     answer.append(response.getJson());

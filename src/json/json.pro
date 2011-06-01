@@ -55,7 +55,9 @@ HEADERS += \
     inc/SetDefaultSessionPointRequestJSON.h \
     inc/SetDefaultSessionPointResponseJSON.h \
     inc/QuitRequestJSON.h \
-    inc/QuitResponseJSON.h
+    inc/QuitResponseJSON.h \
+    inc/RSSFeedSessionRequestJSON.h \
+    inc/RSSFeedSessionResponseJSON.h
 
 SOURCES += \
            src/ChannelListJSON.cpp \

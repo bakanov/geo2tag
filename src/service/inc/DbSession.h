@@ -83,6 +83,9 @@ namespace common
 
     static const QString error;
     static const QString ok;
+                                        // radius of Earth (km)
+    static const double RADIUS_EARTH = 6371;
+    static const double PI = 3.14159265;
 
     DbObjectsCollection();
 
@@ -93,6 +96,7 @@ namespace common
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAddNewMarkQuery(const QByteArray&);
     QByteArray processRssFeedQuery(const QByteArray&);
+    QByteArray processRssFeedSessionQuery(const QByteArray&);
     QByteArray processSubscribeQuery(const QByteArray&);
     QByteArray processAddUserQuery(const QByteArray&);
     QByteArray processAddChannelQuery(const QByteArray&);
