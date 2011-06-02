@@ -46,12 +46,14 @@
 #include <QtSql>
 #include <QThread>
 #include <QMap>
+#include <QHash>
 #include </usr/include/qt4/QtSql/qsql_psql.h>
 #include "DataMarks.h"
 #include "Channel.h"
 #include "DataChannel.h"
 #include "User.h"
 #include "TimeSlot.h"
+#include "Session.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 
@@ -77,17 +79,24 @@ namespace common
 
     QueryExecutor *             m_queryExecutor;
 
+    QHash<QString, QSharedPointer<Session> > m_sessionTokens;
+
     static const QString error;
     static const QString ok;
+                                        // radius of Earth (km)
+    static const double RADIUS_EARTH = 6371;
+    static const double PI = 3.14159265;
 
     DbObjectsCollection();
 
-    QSharedPointer<User> findUserFromToken(const QSharedPointer<User>&) const;
+    const QString generateNewToken() const;
 
     QByteArray processLoginQuery(const QByteArray&);
+    QByteArray processLogoutQuery(const QByteArray&);
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAddNewMarkQuery(const QByteArray&);
     QByteArray processRssFeedQuery(const QByteArray&);
+    QByteArray processRssFeedSessionQuery(const QByteArray&);
     QByteArray processSubscribeQuery(const QByteArray&);
     QByteArray processAddUserQuery(const QByteArray&);
     QByteArray processAddChannelQuery(const QByteArray&);
@@ -97,6 +106,9 @@ namespace common
     QByteArray processSetTimeSlotMarkQuery(const QByteArray&);
     QByteArray processSetDefaultTimeSlotQuery(const QByteArray&);
     QByteArray processSetDefaultTimeSlotMarkQuery(const QByteArray&);
+    QByteArray processGetSessionPointQuery(const QByteArray&);
+    QByteArray processSetSessionPointQuery(const QByteArray&);
+    QByteArray processSetDefaultSessionPointQuery(const QByteArray&);
 
     public:
 

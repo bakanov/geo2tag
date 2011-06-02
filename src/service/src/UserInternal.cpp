@@ -39,10 +39,9 @@
 
 DbUser::DbUser(const QString &login,
 const QString& pass,
-qlonglong id,
-const QString& token): User(login,pass), m_id(id)
+qlonglong id
+): User(login,pass), m_id(id)
 {
-  setToken(token);
 }
 
 

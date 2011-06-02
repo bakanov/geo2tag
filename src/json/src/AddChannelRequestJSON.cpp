@@ -14,7 +14,7 @@ QByteArray AddChannelRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("auth_token", m_usersContainer->at(0)->getToken());
+  obj.insert("auth_token", m_token);
   obj.insert("name", m_channelsContainer->at(0)->getName());
   obj.insert("description",m_channelsContainer->at(0)->getDescription());
   obj.insert("url",m_channelsContainer->at(0)->getUrl());
@@ -33,10 +33,11 @@ void AddChannelRequestJSON::parseJson(const QByteArray&data)
   {
     qFatal("An error occured during parsing json with channel list");
   }
-  QString auth_token = result["auth_token"].toString();
+
+  m_token = result["auth_token"].toString();
   QString name = result["name"].toString();
   QString description = result["description"].toString();
   QString url = result["url"].toString();
-  m_usersContainer->push_back(QSharedPointer<User>(new JsonUser("unknown","unknown",auth_token)));
+
   m_channelsContainer->push_back(QSharedPointer<Channel>(new JsonChannel(name,description,url)));
 }

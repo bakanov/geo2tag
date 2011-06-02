@@ -76,12 +76,6 @@ const QString& User::getLogin() const
 }
 
 
-const QString& User::getToken() const
-{
-  return m_token;
-}
-
-
 const QString& User::getPassword() const
 {
   return m_password;
@@ -97,12 +91,6 @@ const QSharedPointer<Channels> User::getSubscribedChannels() const
 void User::setPassword(QString password)
 {
   m_password = password;
-}
-
-
-void User::setToken(const QString &token)
-{
-  m_token = token;
 }
 
 

@@ -3,8 +3,7 @@ CREATE SEQUENCE users_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 CREATE TABLE users (
   id NUMERIC(9,0) NOT NULL DEFAULT nextval('users_seq'),
   login VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL,
-  token VARCHAR(65) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,  
   constraint users_pkey primary key (id)
 );
 
@@ -78,6 +77,44 @@ CREATE TABLE tagTimeSlot (
                                                        on delete cascade
 );
 
+CREATE TABLE actions (
+id SERIAL NOT NULL,
+name VARCHAR(300) NOT NULL,
+CONSTRAINT id_pk PRIMARY KEY(id),
+unique (id, name)
+);
+
+CREATE TABLE channel_action (
+user_id NUMERIC(9,0) NOT NULL,
+channel_id NUMERIC(9,0) NOT NULL,
+action_id SERIAL,
+CONSTRAINT user_id_channel_action_fk foreign key (user_id) references users(id) on delete cascade,
+CONSTRAINT channel_id_fk foreign key (channel_id) references channel(id) on delete cascade,
+unique (user_id, channel_id, action_id)
+);
+
+CREATE TABLE mark_action (
+user_id NUMERIC(9,0) NOT NULL,
+mark_id NUMERIC(9,0) NOT NULL,
+action_id SERIAL,
+CONSTRAINT user_id_fk foreign key (user_id) references users(id) on delete cascade,
+CONSTRAINT mark_id_fk foreign key (mark_id) references tag(id) on delete cascade,
+unique (user_id, mark_id, action_id)
+);
+
+INSERT into channel_action (user_id, channel_id, action) values (5, 3, 1);
+INSERT into channel_action (user_id, channel_id, action) values (2, 5, 3);
+INSERT into channel_action (user_id, channel_id, action) values (3, 4, 2);
+
+INSERT into actions (id, name) values (1, 'create');
+INSERT into actions (id, name) values (2, 'read');
+INSERT into actions (id, name) values (3, 'write');
+INSERT into actions (id, name) values (4, 'subscribe');
+INSERT into actions (id, name) values (5, 'unsubscribe');
+INSERT into actions (id, name) values (6, 'remove');
+
+INSERT into mark_action (user_id, mark_id, action) values (1, 1, 2);
+INSERT into mark_action (user_id, mark_id, action) values (2, 1, 3);
 
 
 
@@ -87,10 +124,10 @@ INSERT into channel (name, description, url) values ('Fuel prices', 'This is fre
 INSERT into channel (name, description, url) values ('Sales', 'This is free channel where you can post/read sales advertisements', '');
 INSERT into channel (name, description, url) values ('My channel', 'This is free channel where you and your friends can post/read your tags', '');
 
-INSERT into users (login, password, token) values ('Paul',   'test', 'PPPPPPPPPP');
-INSERT into users (login, password, token) values ('Kirill', 'test', 'KKKKKKKKKK');
-INSERT into users (login, password, token) values ('Mark',   'test', 'MMMMMMMMMM');
-INSERT into users (login, password, token) values ('Yevgeni', 'test', 'YYYYYYYYYY');
+INSERT into users (login, password) values ('Paul',   'test');
+INSERT into users (login, password) values ('Kirill', 'test');
+INSERT into users (login, password) values ('Mark',   'test');
+INSERT into users (login, password) values ('Yevgeni', 'test');
 
 INSERT into tag(latitude, longitude, label, description, user_id, url) values(60.166504, 24.841204, 'A', 'Accident at road 51. Time: 15:45, January 2, 2010.', 1, 'http://dps.sd.gov/licensing/driver_licensing/images/Image24.gif');
 INSERT into tag(latitude, longitude, label, description, user_id, url) values(60.163216, 24.859314, 'B', 'Shell 95: 1.299 e', 2, 'http://www.unf.edu/groups/volctr/images/question-mark.jpg');

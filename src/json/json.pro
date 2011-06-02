@@ -21,22 +21,23 @@ HEADERS += \
            inc/JsonDataMark.h \
            inc/JsonChannel.h \
            inc/JsonTimeSlot.h \
-	         inc/JsonSerializer.h \
-	         inc/LoginRequestJSON.h \
-	         inc/LoginResponseJSON.h \
-	         inc/AddUserRequestJSON.h \
-	         inc/AddUserResponseJSON.h \
-	         inc/AddNewMarkRequestJSON.h \
-	         inc/AddNewMarkResponseJSON.h \
-	         inc/SubscribeChannelResponseJSON.h \
-	         inc/UnsubscribeChannelResponse.h \
-	         inc/SubscribedChannelsRequestJSON.h \
-	         inc/SubscribedChannelsResponseJSON.h \
-	         inc/AddChannelRequestJSON.h \
-	         inc/AddChannelResponseJSON.h \
+           inc/JsonSession.h \
+                 inc/JsonSerializer.h \
+                 inc/LoginRequestJSON.h \
+                 inc/LoginResponseJSON.h \
+                 inc/AddUserRequestJSON.h \
+                 inc/AddUserResponseJSON.h \
+                 inc/AddNewMarkRequestJSON.h \
+                 inc/AddNewMarkResponseJSON.h \
+                 inc/SubscribeChannelResponseJSON.h \
+                 inc/UnsubscribeChannelResponse.h \
+                 inc/SubscribedChannelsRequestJSON.h \
+                 inc/SubscribedChannelsResponseJSON.h \
+                 inc/AddChannelRequestJSON.h \
+                 inc/AddChannelResponseJSON.h \
                  inc/GetTimeSlotRequestJSON.h \
                  inc/GetTimeSlotResponseJSON.h \
-	         inc/DefaultResponseJSON.h \
+                 inc/DefaultResponseJSON.h \
                  inc/SetTimeSlotRequestJSON.h \
                  inc/SetTimeSlotResponseJSON.h \
                  inc/GetTimeSlotMarkRequestJSON.h \
@@ -46,7 +47,17 @@ HEADERS += \
                  inc/SetDefaultTimeSlotMarkRequestJSON.h \
                  inc/SetDefaultTimeSlotMarkResponseJSON.h \
                  inc/SetDefaultTimeSlotRequestJSON.h \
-                 inc/SetDefaultTimeSlotResponseJSON.h
+                 inc/SetDefaultTimeSlotResponseJSON.h \
+    inc/GetSessionPointRequestJSON.h \
+    inc/GetSessionPointResponseJSON.h \
+    inc/SetSessionPointRequestJSON.h \
+    inc/SetSessionPointResponseJSON.h \
+    inc/SetDefaultSessionPointRequestJSON.h \
+    inc/SetDefaultSessionPointResponseJSON.h \
+    inc/QuitRequestJSON.h \
+    inc/QuitResponseJSON.h \
+    inc/RSSFeedSessionRequestJSON.h \
+    inc/RSSFeedSessionResponseJSON.h
 
 SOURCES += \
            src/ChannelListJSON.cpp \
@@ -59,8 +70,9 @@ SOURCES += \
            src/JsonTimeSlot.cpp \
            src/JsonDataMark.cpp \
            src/JsonSerializer.cpp \
-           src/LoginRequestJSON.cpp \
+           src/JsonSession.cpp \
            src/LoginResponseJSON.cpp \
+           src/LoginRequestJSON.cpp \
            src/AddNewMarkRequestJSON.cpp \
            src/AddChannelRequestJSON.cpp \
            src/GetTimeSlotRequestJSON.cpp \
@@ -70,7 +82,10 @@ SOURCES += \
            src/GetTimeSlotMarkRequestJSON.cpp \
            src/AddNewMarkResponseJSON.cpp \
            src/GetTimeSlotMarkResponseJSON.cpp \
-           src/SetTimeSlotMarkRequestJSON.cpp
+           src/SetTimeSlotMarkRequestJSON.cpp \
+    src/GetSessionPointRequestJSON.cpp \
+    src/GetSessionPointResponseJSON.cpp \
+    src/SetSessionPointRequestJSON.cpp
 
 LIBS    +=  -lcommon -lqjson
 

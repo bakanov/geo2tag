@@ -83,8 +83,7 @@ void LoginQuery::processReply(QNetworkReply *reply)
   response.parseJson(reply->readAll());
   if(response.getStatus() == "Ok")
   {
-    QSharedPointer<User> user = response.getUsers()->at(0);
-    m_user = QSharedPointer<User>(new JsonUser(m_login, m_password, user->getToken()));
+    m_user = QSharedPointer<User>(new JsonUser(m_login, m_password));
     syslog(LOG_INFO,"!!connected!");
     Q_EMIT connected();
   }

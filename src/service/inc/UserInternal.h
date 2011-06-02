@@ -50,7 +50,7 @@ class DbUser: public User
   qlonglong m_id;
 
   public:
-    DbUser(const QString& login, const QString& pass, qlonglong id, const QString& token);
+    DbUser(const QString& login, const QString& pass, qlonglong id);
 
     qlonglong getId() const;
     void setId(qlonglong);

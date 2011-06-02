@@ -34,7 +34,7 @@ void DataThread::run()
   {
     if(m_isConnected)
     {
-      qDebug() << "connected: auth_token=" << m_loginQuery->getUser()->getToken();
+      // qDebug() << "connected: auth_token=" << m_loginQuery->getUser()->getToken();
       emit(getFeed());
       //ToDo query RSS
 

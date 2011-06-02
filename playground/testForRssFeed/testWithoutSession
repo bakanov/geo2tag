@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+curl -d "{\"login\":\"Kirill\",\"password\":\"test\"}"  http://localhost:80/service?query=login > loginResult
+cut -d'"' -f4 loginResult > loginResult2
+
+a=`cat loginResult2`
+
+for((i=0; i<500; ++i))
+do 
+	curl -d "{\"auth_token\":\"$a\"}"  http://localhost:80/service?query=rss
+done 
+

@@ -40,13 +40,13 @@
 #include <QtCore/QtCore>
 #include <QApplication>
 
-#include "ChannelAdd_Test.h"
+#include "TestsForTimeSlotAndSession.h"
 
 int main(int c, char **v)
 {
   QApplication app(c,v);
 
-  Test::ChannelAdd_Test test;
+  Test::TestsForTimeSlotAndSession test;
   QTest::qExec(&test);
 
   return 0;

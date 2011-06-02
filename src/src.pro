@@ -9,7 +9,7 @@ SUBDIRS = common
 maemo5: {
   SUBDIRS += maps \
              json \
-	     http_requests \ 
+             http_requests \
              tracker
 	     
 }

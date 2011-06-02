@@ -83,12 +83,10 @@ void SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
     return;
   }
   QString channelLabel = result["channel"].toString();
-  QString authToken =    result["auth_token"].toString();
+  m_token =    result["auth_token"].toString();
 
   QSharedPointer<Channel> dummyChannel(new JsonChannel(channelLabel, "from SubscribeChannelReques"));
   m_channelsContainer->push_back(dummyChannel);
-  QSharedPointer<User>    dummyUser(new JsonUser("unknown", "unknown", authToken));
-  m_usersContainer->push_back(dummyUser);
 }
 
 
@@ -97,7 +95,7 @@ QByteArray SubscribeChannelRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_usersContainer->at(0)->getToken());
+  request.insert("auth_token", m_token);
   request.insert("channel", m_channelsContainer->at(0)->getName());
 
   return serializer.serialize(request);
