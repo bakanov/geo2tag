@@ -100,6 +100,7 @@ void RSSFeedQuery::processReply(QNetworkReply *reply)
   {
     m_hashMap = response.getRSSFeed();
 
+
     Q_EMIT rssFeedReceived();
   }
   else

@@ -22,7 +22,8 @@ linux: {
 	     tracker \
              service \
              common/tst \
-             service/tst
+             service/tst \
+             tracker/observer/tst
 }
 
 symbian: {

@@ -84,7 +84,6 @@ void LoginQuery::processReply(QNetworkReply *reply)
   if(response.getStatus() == "Ok")
   {
     m_token= response.getAuthToken();
-  //  m_user = QSharedPointer<User>(new JsonUser(m_login, m_password));
     syslog(LOG_INFO,"!!connected!");
     Q_EMIT connected();
   }
