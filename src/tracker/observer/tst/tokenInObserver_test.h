@@ -1,17 +1,18 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtSql>
-#include </home/regina/QtSDK/Desktop/Qt/473/gcc/include/QtSql/qsql_psql.h>
 #include "../../../http_requests/inc/LoginQuery.h"
 #include "../../../http_requests/inc/RSSFeedQuery.h"
 #include "../../../service/inc/DbSession.h"
 
 namespace Test
 {
-const QString loginRequest = "{\"login\":\"tracker\",\"password\":\"test\"}";
+const QString loginRequest = "{\"login\":\"Kirill\",\"password\":\"test\"}";
 const QString requestBegin = "{\"auth_token\":\"";
 const QString requestEnd = "\", \"latitude\":30.0, \"longitude\":60.0, \"radius\":30.0}";
-
+const QString correctReplyPart = "\"status\" : \"Ok\", \"status_description\" : \"feed has been generated\"";
+const QString wrongReplyPart = "\"status\" : \"Error\", \"status_description\" : \"Wrong authentification key\"";
+const QString wrongToken = "wrongToken";
 class tokenInObserver_test : public QObject
 {
     Q_OBJECT
@@ -23,7 +24,8 @@ public:
 
     ~tokenInObserver_test();
 private slots:
-    void testRequest();
+    void testFeedRequestWithCorrectToken();
+    void testFeedRequestWithWrongToken();
 
 
 };
