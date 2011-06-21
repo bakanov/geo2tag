@@ -10,6 +10,8 @@ namespace Test
 
   TestsForTimeSlotAndSession::~TestsForTimeSlotAndSession()
   {
+    m_db.remove();
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
     database.setHostName("localhost");
     database.setDatabaseName("geo2tag");
@@ -57,8 +59,6 @@ namespace Test
       syslog(LOG_INFO,"Commit for DeleteMark sql query - delete from table tag");
 
     database.commit();
-
-    database.close();
   }
 
   void TestsForTimeSlotAndSession::login()

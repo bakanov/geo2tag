@@ -86,6 +86,7 @@ namespace common
                                         // radius of Earth (km)
     static const double RADIUS_EARTH = 6371;
     static const double PI = 3.14159265;
+    bool isExisted;
 
     DbObjectsCollection();
 
@@ -119,6 +120,8 @@ namespace common
 
       void startUpdate();
       void stopUpdate();
+
+      void remove();
 
       ~DbObjectsCollection();
 

@@ -154,6 +154,7 @@ namespace common
       m_timeSlotsContainer,
       m_dataChannelsMap,
       NULL);
+    isExisted=true;
   }
 
   DbObjectsCollection& DbObjectsCollection::getInstance()
@@ -175,10 +176,7 @@ namespace common
 
   DbObjectsCollection::~DbObjectsCollection()
   {
-    m_updateThread->terminate();
-    m_updateThread->wait();
-    delete m_updateThread;
-    delete m_queryExecutor;
+      if (isExisted) remove();
   }
 
   QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArray& body)
@@ -1299,6 +1297,14 @@ void common::DbObjectsCollection::forceUpdate()
 {
   m_updateThread->forceUpdate();
 }                                       // namespace common
+void common::DbObjectsCollection::remove()
+{
 
+    m_updateThread->terminate();
+    m_updateThread->wait();
+    delete m_updateThread;
+    delete m_queryExecutor;
+    isExisted=false;
+}
 
 ///* ===[ End of file ]=== */

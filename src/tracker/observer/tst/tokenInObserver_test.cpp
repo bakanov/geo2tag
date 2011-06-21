@@ -11,7 +11,7 @@ tokenInObserver_test::tokenInObserver_test(QObject *parent):QObject(parent), m_d
 
 
     QString reply = QString(m_db.process("login", logRequest).data());
-    m_db.forceUpdate();
+   // m_db.forceUpdate();
 
     int pos = reply.indexOf("{");
     reply.remove(0, pos);
@@ -24,7 +24,7 @@ tokenInObserver_test::tokenInObserver_test(QObject *parent):QObject(parent), m_d
 
 tokenInObserver_test::~tokenInObserver_test()
 {
-
+  m_db.remove();
 }
 
 void tokenInObserver_test::testFeedRequestWithCorrectToken()

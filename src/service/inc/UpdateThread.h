@@ -46,7 +46,6 @@ class UpdateThread: public QThread
       const QSharedPointer<TimeSlots>& timeSlots,
       const QSharedPointer<DataChannels>& dataChannelsMap,
       QObject *parent = 0);
-
     void lockWriting();
     void unlockWriting();
     void forceUpdate();

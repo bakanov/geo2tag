@@ -44,7 +44,7 @@ void UpdateThread::run()
 
 void UpdateThread::loadUsers(Users &container)
 {
-  QSqlQuery query(m_database);
+    QSqlQuery query(m_database);
   query.exec("select id, login, password from users order by id;");
   while (query.next())
   {
